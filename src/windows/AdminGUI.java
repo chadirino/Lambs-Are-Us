@@ -15,7 +15,7 @@ public class AdminGUI extends JFrame {
     private JLabel lblEmployeeID, lblUserName, lblUserType;
     private JTextField tfEmployeeID, tfUserName;
     private JComboBox<String> cbUserType;
-    private String idInput, userInput, typeInput, selectedType;
+    private String idInput, userInput, selectedType;
     private Integer employeeID;
     private JButton btnAdd, btnSave, btnCancel;
     private ButtonListener buttonListen;
@@ -139,9 +139,9 @@ public class AdminGUI extends JFrame {
         idInput = tfEmployeeID.getText();
         employeeID = Integer.parseInt(idInput);
         userInput = tfUserName.getText();
-        typeInput = (String) cbUserType.getSelectedItem();
+        selectedType = (String) cbUserType.getSelectedItem();
         
-        if (fieldsFilled(idInput, userInput, typeInput) == false) {
+        if (fieldsFilled(idInput, userInput, selectedType) == false) {
             giveFillWarning();
         } else if (validEmployee(employeeID) == false) {
             giveInvalidWarning();
@@ -150,7 +150,8 @@ public class AdminGUI extends JFrame {
         } else if (duplicateUserName(userInput) == true) {
             giveDuplicateUserNameWarning();
         } else {
-            addUser(employeeID, userInput, typeInput);
+            addUser(employeeID, userInput, selectedType);
+            JOptionPane.showMessageDialog(null, getEmployeeName(employeeID) + " was successfully added as a " + selectedType + ".");
             fAdd.dispose();
             openViewWindow();
         }
@@ -188,6 +189,10 @@ public class AdminGUI extends JFrame {
         Sql.getUsers();
     }
 
+    private String getEmployeeName() {
+        return Sql.getEmployeeName();
+    }
+    
     private Boolean validEmployee(Integer employeeID) {
         return Sql.validEmployee(employeeID);
     }
