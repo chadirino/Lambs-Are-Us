@@ -78,7 +78,7 @@ public class Sql {
 		try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("select \"employeeID\", \"userName\" from userLogin");
 			ResultSet rs = pst.executeQuery();
-			AdminGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
+			AdminGUI.tblUsers.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
