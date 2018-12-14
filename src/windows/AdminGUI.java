@@ -189,8 +189,8 @@ public class AdminGUI extends JFrame {
         Sql.getUsers();
     }
 
-    private String getEmployeeName() {
-        return Sql.getEmployeeName();
+    private String getEmployeeName(Integer employeeID) {
+        return Sql.getEmployeeName(employeeID);
     }
     
     private Boolean validEmployee(Integer employeeID) {
