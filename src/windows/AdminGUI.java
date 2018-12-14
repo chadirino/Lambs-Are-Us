@@ -96,10 +96,14 @@ public class AdminGUI extends JFrame {
         fAdd = new JFrame();
         dlgAdd = new JDialog(fAdd);
         dlgAdd.add(pAdd);
-        fAdd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        fAdd.setTitle("New User");
-        fAdd.setSize(425,300);
-        fAdd.setLocationRelativeTo(null);
+        dlgAdd.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent event) {
+                fAdd.dispose();
+            }
+        });
+        dlgAdd.setTitle("New User");
+        dlgAdd.setSize(425,300);
+        dlgAdd.setLocationRelativeTo(null);
     }
 
     public static void main(String[] args) {
