@@ -87,6 +87,7 @@ public class AdminGUI extends JFrame {
         // ======================================================
         
         fView = new JFrame();
+        fView.add(pView);
         fView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         fView.setTitle("Admin Page");
         fView.setSize(425,300);
@@ -96,6 +97,7 @@ public class AdminGUI extends JFrame {
         fAdd = new JFrame();
         dlgAdd = new JDialog(fAdd);
         dlgAdd.add(pAdd);
+        dlgAdd.getRootPane().setDefaultButton(btnSave);
         dlgAdd.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
                 fAdd.dispose();
