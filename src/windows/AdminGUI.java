@@ -49,7 +49,7 @@ public class AdminGUI extends JFrame {
         lblUserType = new JLabel("User Type:");
         
         tfEmployeeID = new JTextField(8);
-        tfUserName = new JTextField();
+        tfUserName = new JTextField(8);
         
         String[] userTypes = {"Staff","Manager","Admin"};
         cbUserType = new JComboBox<>(userTypes);
@@ -61,6 +61,7 @@ public class AdminGUI extends JFrame {
         // ======================================================
 
         tblUsers = new JTable();
+        Sql.getUsers();
         spUsers = new JScrollPane(tblUsers);
         spUsers.setPreferredSize(new Dimension(375,200));
 
@@ -69,7 +70,7 @@ public class AdminGUI extends JFrame {
         // ======================================================
         
         pView = new JPanel();
-        pView.add(tblUsers);
+        pView.add(spUsers);
         pView.add(btnAdd);
 
         pAdd = new JPanel();
@@ -104,7 +105,7 @@ public class AdminGUI extends JFrame {
             }
         });
         dlgAdd.setTitle("New User");
-        dlgAdd.setSize(425,300);
+        dlgAdd.setSize(550,325);
         dlgAdd.setLocationRelativeTo(null);
     }
 
@@ -121,15 +122,17 @@ public class AdminGUI extends JFrame {
             if (event.getSource() == btnAdd) {
                 openAddDialog();
             } else if (event.getSource() == btnSave) {
-                validateAdd();;
+                validateAdd();
                 openViewWindow();
             }
         }
     }
 
     private void openViewWindow() {
-        getUsers();
-        fView.setVisible(true);
+    	getUsers();
+    	fView.setVisible(true);
+    	
+        
     }
 
     private void openAddDialog() {
@@ -200,22 +203,25 @@ public class AdminGUI extends JFrame {
     }
     
     private Boolean validEmployee(Integer employeeID) {
-        return Sql.validEmployee(employeeID);
+//        return Sql.validEmployee(employeeID);
+    	return false;
     }
     
     private Boolean duplicateEmployee(Integer employeeID) {
-        return Sql.duplicateEmployee(employeeID);
+//        return Sql.duplicateEmployee(employeeID);
+    	return false;
     }
 
     private Boolean duplicateUserName(String userName) {
-        return Sql.duplicateUserName(userName);
+//        return Sql.duplicateUserName(userName);
+    	return false;
     }
     
     private void addUser(Integer employeeID, String userName, String userType) {
-        Sql.addUser(employeeID, userName, userType);
+//        Sql.addUser(employeeID, userName, userType);
     }
 
     private void deleteUser(String userName) {
-        Sql.deleteUser(userName);
+//        Sql.deleteUser(userName);
     }	
 }
