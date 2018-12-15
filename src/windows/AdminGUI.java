@@ -203,18 +203,15 @@ public class AdminGUI extends JFrame {
     }
     
     private Boolean validEmployee(Integer employeeID) {
-//        return Sql.validEmployee(employeeID);
-    	return false;
+        return Sql.validEmployee(employeeID);
     }
     
     private Boolean duplicateEmployee(Integer employeeID) {
-//        return Sql.duplicateEmployee(employeeID);
-    	return false;
+        return Sql.duplicateEmployee(employeeID);
     }
 
     private Boolean duplicateUserName(String userName) {
-//        return Sql.duplicateUserName(userName);
-    	return false;
+        return Sql.duplicateUserName(userName);
     }
     
     private void addUser(Integer employeeID, String userName, String userType) {
