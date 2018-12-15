@@ -1,5 +1,5 @@
 package windows;
-//testing commit//
+//testing commit
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -33,7 +33,7 @@ public class HomeGUI {
         btnInv = new JButton("Ingredients");
         btnInv.setPreferredSize(new Dimension(220,65));
         btnInv.setFont(buttonFont);
-
+        
         // button to open inventory system
         btnPurch = new JButton("Purchases");
         btnPurch.setPreferredSize(new Dimension(220,65));
