@@ -246,6 +246,22 @@ public class Sql {
 		}
 		DbConnection.disconnect();
     }
+    
+    // add ingredient
+    public static void addIngredient() {
+    	
+    }
+    
+    // delete ingredient
+    public static void deleteIngredient() {
+    	
+    }
+    
+    // add ingredient
+    public static void updateQty() {
+    	
+    }
+    
 
 	//======================================== Purchase GUI ======================================\\
 	
