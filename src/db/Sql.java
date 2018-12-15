@@ -225,9 +225,9 @@ public class Sql {
     public static void sortAtoZ() {
     	DbConnection.connect();
     	try {
-		PreparedStatement pst = DbConnection.con.prepareStatement("Select * from ingredient order by name");
-		ResultSet rs = pst.executeQuery();
-		PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from ingredient order by name");
+			ResultSet rs = pst.executeQuery();
+			IngredientGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -238,9 +238,9 @@ public class Sql {
     public static void sortZtoA() {
     	DbConnection.connect();
     	try {
-		PreparedStatement pst = DbConnection.con.prepareStatement("Select * from ingredient order by name desc");
-		ResultSet rs = pst.executeQuery();
-		PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from ingredient order by name desc");
+			ResultSet rs = pst.executeQuery();
+			IngredientGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
