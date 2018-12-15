@@ -6,6 +6,8 @@ import net.proteanit.sql.*;
 
 public class Sql {
 
+	//=======================================  LOGIN GUI ======================================\\
+	
 	// change password
     public static void setPassword(String user, String password) {
     	DbConnection.connect();
@@ -72,11 +74,14 @@ public class Sql {
 		DbConnection.disconnect();
 	}
 	
+	
+	//======================================= ADMIN GUI ====================================\\//
+	
 	//view users list
 	public static void getUsers() {
 		DbConnection.connect();
 		try {
-			PreparedStatement pst = DbConnection.con.prepareStatement("select \"employeeID\", \"userName\" from userLogin");
+			PreparedStatement pst = DbConnection.con.prepareStatement("select \"employeeID\", \"userName\", \"userType\" from userLogin");
 			ResultSet rs = pst.executeQuery();
 			AdminGUI.tblUsers.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
@@ -84,6 +89,124 @@ public class Sql {
 			}
 		DbConnection.disconnect();
 	}
+	
+	// get employee name
+    public static String getEmployeeName(int employeeID) {
+    	DbConnection.connect();
+    	String name = "";
+		try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("select * from employee where employeeID = " + employeeID);
+			ResultSet rs = pst.executeQuery();
+			
+			name = rs.getString("firstName") + " " + rs.getString("lastName");
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		DbConnection.disconnect();
+		
+		
+		return name;
+    }
+    
+    //validate employeeID
+    public static boolean validEmployee(int employeeID) {
+    	DbConnection.connect();
+    	int counter = 0;
+		try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("select * from employee where employeeID = " + employeeID);
+			ResultSet rs = pst.executeQuery();
+			
+			while (rs.next()) {
+				counter++;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		DbConnection.disconnect();
+		
+		if(counter == 0) {
+			System.out.println("invalid employee");
+			return false;
+		}
+		else {
+			System.out.println("valid employee");
+			return true;
+		}
+    }
+    
+    //duplicate employee
+    public static boolean duplicateEmployee(Integer employeeID) {
+    	DbConnection.connect();
+    	int counter = 0;
+		try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("select * from userLogin where employeeID = " + employeeID);
+			ResultSet rs = pst.executeQuery();
+			
+			while (rs.next()) {
+				counter++;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		DbConnection.disconnect();
+		
+		if(counter == 0) {
+			System.out.println("no duplicate employee");
+			return false;
+		}
+		else {
+			System.out.println("duplicate employee already exists");
+			return true;
+		}
+    }
+    
+    //duplicate userName
+    public static boolean duplicateUserName(String userName) {
+    	DbConnection.connect();
+    	int counter = 0;
+		try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("select * from userLogin where userName = '" + userName+"'");
+			ResultSet rs = pst.executeQuery();
+			
+			while (rs.next()) {
+				counter++;
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		DbConnection.disconnect();
+		
+		if(counter == 0) {
+			System.out.println("no duplicate userName");
+			return false;
+		}
+		else {
+			System.out.println("duplicate userName already exists");
+			return true;
+		}
+    }
+    
+    //add user
+    public static void addUser(int employeeID, String userName, String userType) {
+    	DbConnection.connect();
+    	try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("insert into userLogin (employeeID, userName, userType, password) values("+employeeID+", '"+userName+"', '"+userType+"', 'password')");
+			pst.executeUpdate();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
+    }
+	
+	//======================================== INGREDIENT GUI ==================================\\
 	
 	//view list of inventory items
 	public static void getIngredients() {
@@ -97,8 +220,36 @@ public class Sql {
 			}
 		DbConnection.disconnect();
 	}
+	
+	// sort A to Z
+    public static void sortAtoZ() {
+    	DbConnection.connect();
+    	try {
+		PreparedStatement pst = DbConnection.con.prepareStatement("Select * from ingredient order by name");
+		ResultSet rs = pst.executeQuery();
+		PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
+    }
+    
+    // sort by date in descending order
+    public static void sortZtoA() {
+    	DbConnection.connect();
+    	try {
+		PreparedStatement pst = DbConnection.con.prepareStatement("Select * from ingredient order by name desc");
+		ResultSet rs = pst.executeQuery();
+		PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
+    }
 
-	//view list of inventory items
+	//======================================== Purchase GUI ======================================\\
+	
+	//view list of purchases
 	public static void getPurchases() {
 		DbConnection.connect();
 		try {
@@ -124,11 +275,12 @@ public class Sql {
 	    }
 	
 	// sort by date in ascending order
-	    public static void sortAscending() {
+	    public static void mostRecentLast() {
 	    	DbConnection.connect();
 	    	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase order by date");
-			pst.executeUpdate();
+			ResultSet rs = pst.executeQuery();
+			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -136,110 +288,18 @@ public class Sql {
 	    }
 	    
 	 // sort by date in descending order
-	    public static void sortDescending() {
+	    public static void mostRecentFirst() {
 	    	DbConnection.connect();
 	    	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase order by date desc");
-			pst.executeUpdate();
+			ResultSet rs = pst.executeQuery();
+			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
 			DbConnection.disconnect();
 	    }
 	    
+	  
+	    
 }
-
-
-/*    
-    
-    
-
-    //view list of inventory items
-	public static void inventory_view() {
-		connect();
-		try {
-			PreparedStatement pst = con.prepareStatement("select * from ingredient");
-			ResultSet rs = pst.executeQuery();
-			InventoryGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
-//			while (rs.next()) {
-//				System.out.println(rs.getString("name") + "\t" + rs.getString("address"));
-			}catch(Exception e) {
-				System.out.println(e.getMessage());
-			}
-		disconnect();
-
-		}
-	
-	//view users list
-	public static void user_view() {
-		connect();
-		try {
-			PreparedStatement pst = con.prepareStatement("select \"Employee ID\", \"username\" from user");
-			ResultSet rs = pst.executeQuery();
-			AdminGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
-			}catch(Exception e) {
-				System.out.println(e.getMessage());
-			}
-		disconnect();
-
-		}
-	
-	public static void user_add() {
-		connect();
-		try {
-			//need to see which jtext fields will produce what to complete query
-			PreparedStatement pst = con.prepareStatement("insert into user (\"Employee ID\", \"username\", \"password\") values");
-			ResultSet rs = pst.executeQuery();
-			//double-check Jtable being used
-			AdminGUI.tblUpdate.setModel(DbUtils.resultSetToTableModel(rs));
-//			while (rs.next()) {
-//				System.out.println(rs.getString("name") + "\t" + rs.getString("address"));
-			}catch(Exception e) {
-				System.out.println(e.getMessage());
-			}
-		disconnect();
-
-		}
-	
-	//view purchases list
-		public static void purchases_view() {
-			connect();
-			try {
-				//query may need some adjustment
-				PreparedStatement pst = con.prepareStatement("select * from purchases");
-				ResultSet rs = pst.executeQuery();
-				PurchasesGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
-				}catch(Exception e) {
-					System.out.println(e.getMessage());
-				}
-			disconnect();
-
-			}
-	
-		//add purchases
-		public static void purchases_add() {
-			connect();
-			try {
-				//query may still need some adjustment
-				PreparedStatement pst = con.prepareStatement("insert into purchases (\"Purchase ID\", \"username\", \"ingredient\", \"qantity\") values(...........)"  );
-				ResultSet rs = pst.executeQuery();
-				PurchasesGUI.tblEdit.setModel(DbUtils.resultSetToTableModel(rs));
-				}catch(Exception e) {
-					System.out.println(e.getMessage());
-				}
-			disconnect();
-
-			}
-		
-		
-
-
-	public static void main(String[] args) {
-		Sql s = new Sql();
-		inventory_view();
-	}
-
-
-
-}
-*/
