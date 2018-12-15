@@ -29,7 +29,7 @@ public class AdminGUI extends JFrame {
         buttonListen = new ButtonListener();
 
         btnAdd = new JButton("New User");
-        btnAdd.setPreferredSize(new Dimension(85,25));
+        btnAdd.setPreferredSize(new Dimension(100,30));
         btnAdd.addActionListener(buttonListen);
 
         btnSave = new JButton("Save");
