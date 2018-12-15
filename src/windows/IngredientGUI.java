@@ -83,6 +83,7 @@ public class IngredientGUI extends JFrame {
         miUpdate.addActionListener(menuListen);
         miSortDesc.addActionListener(menuListen);
         miSortAsc.addActionListener(menuListen);
+        miLogout.addActionListener(menuListen);
 
         // ----------------------- menu -------------------------
         
@@ -226,19 +227,18 @@ public class IngredientGUI extends JFrame {
     }
 
     private void getIngredients() {
-        
+        Sql.getIngredients();
     }
     
     private void addIngredient() {
-
+        Sql.addIngredient();
     }
 
     private void deleteIngredient() {
-
+        Sql.deleteIngredient();
     }
 
     private void updateQty() {
-
+        Sql.updateQty();
     }
-	
 }
