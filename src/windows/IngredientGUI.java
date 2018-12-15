@@ -203,10 +203,10 @@ public class IngredientGUI extends JFrame {
                 openUpdate(); 
             } else if (event.getSource() == miSortDesc) {
                 // sort descending
-            	openViewZtoA();
+            	openViewAtoZ();
             } else if (event.getSource() == miSortAsc) {
                 // sort ascending
-            	openViewAtoZ();
+            	openViewZtoA();
             } else if (event.getSource() == miLogout) {
                 dispose();
                 new LoginGUI();
