@@ -27,6 +27,7 @@ public class IngredientGUI extends JFrame {
 
         // non-editable table for initial page
         tblNonEdit = new JTable();
+        Sql.getIngredients();
         // tblNonEdit.addMouseListener(new MouseAdapter() {
         //     public void mousePressed(MouseEvent event) {
         //         JTable table =(JTable) event.getSource();
@@ -149,6 +150,22 @@ public class IngredientGUI extends JFrame {
         pView.add(spNonEdit);
         cp.add(pView);
     }
+    
+    private void openViewAtoZ() {
+        switchPage();
+        Sql.sortAtoZ();
+        pView = new JPanel();
+        pView.add(spNonEdit);
+        cp.add(pView);
+    }
+    
+    private void openViewZtoA() {
+        switchPage();
+        Sql.sortZtoA();
+        pView = new JPanel();
+        pView.add(spNonEdit);
+        cp.add(pView);
+    }
 
     // new ingredient page
     private void openAdd() {
@@ -186,8 +203,10 @@ public class IngredientGUI extends JFrame {
                 openUpdate(); 
             } else if (event.getSource() == miSortDesc) {
                 // sort descending
+            	openViewZtoA();
             } else if (event.getSource() == miSortAsc) {
                 // sort ascending
+            	openViewAtoZ();
             } else if (event.getSource() == miLogout) {
                 dispose();
                 new LoginGUI();

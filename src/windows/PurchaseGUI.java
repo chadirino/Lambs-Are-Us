@@ -195,7 +195,7 @@ public class PurchaseGUI {
                 fDateRange.dispose(); 
             }
         });
-        dlgDateRange.setSize(300,200);
+        dlgDateRange.setSize(350,200);
         dlgDateRange.setLocationRelativeTo(null);
 
         // open initial page
@@ -264,8 +264,10 @@ public class PurchaseGUI {
                 openUpdate(); 
             } else if (event.getSource() == miSortNew) {
                 // sort newest first
+            	openViewWindowMostRecentFirst();
             } else if (event.getSource() == miSortOld) {
                 // sort oldest first
+            	openViewWindowMostRecentLast();
             } else if (event.getSource() == miDate) {
                 openSetRangeDialog();
             } else if (event.getSource() == btnBack) {
@@ -296,6 +298,17 @@ public class PurchaseGUI {
         Sql.getPurchases();
         fView.setVisible(true);
     }
+    
+    private void openViewWindowMostRecentFirst() {
+        Sql.mostRecentFirst();
+        fView.setVisible(true);
+    }
+    
+    private void openViewWindowMostRecentLast() {
+        Sql.mostRecentLast();
+        fView.setVisible(true);
+    }
+    
     
     private void setDateRange() {
         inputDateFrom = tfDateFrom.getText();
