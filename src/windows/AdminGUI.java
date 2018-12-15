@@ -215,7 +215,7 @@ public class AdminGUI extends JFrame {
     }
     
     private void addUser(Integer employeeID, String userName, String userType) {
-//        Sql.addUser(employeeID, userName, userType);
+        Sql.addUser(employeeID, userName, userType);
     }
 
     private void deleteUser(String userName) {
