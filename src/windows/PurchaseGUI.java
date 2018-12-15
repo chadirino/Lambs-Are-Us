@@ -82,7 +82,7 @@ public class PurchaseGUI {
         //                     labels/fields
         // ======================================================
 
-        lblSearch = new JLabel("Order No:");
+        lblSearch = new JLabel("Purchase ID:");
         tfSearch = new JTextField(12);
 
         lblDateFrom = new JLabel("From: ");
@@ -118,6 +118,7 @@ public class PurchaseGUI {
         miSortNew.addActionListener(menuListen);
         miSortOld.addActionListener(menuListen);
         miDate.addActionListener(menuListen);
+        miLogout.addActionListener(menuListen);
 
         // ----------------------- menu ------------------------
         
