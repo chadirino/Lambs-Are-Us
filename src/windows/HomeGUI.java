@@ -9,7 +9,7 @@ import javax.imageio.*;
 
 public class HomeGUI {
 
-	public JFrame fUser, fAdmin;
+	public static JFrame fUser, fAdmin;
     private JPanel pUser, pAdmin;
     private JButton btnInv, btnPurch, btnUsers;
     private BufferedImage icon; 
