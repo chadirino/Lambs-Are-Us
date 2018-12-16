@@ -321,20 +321,20 @@ public class PurchaseGUI {
 
         user = LoginGUI.user;
         employeeID = getEmployeeID(user);
-        purchaseID = 0;
-        purchaseItem = 0;
         dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         date = LocalDateTime.now();
         formattedDate = dateFormat.format(date);
         selectedName = (String) cbName.getSelectedItem();
         strUnitPriceInput = tfUnitPrice.getText();
         strUnitQtyInput = tfUnitQty.getText();
+        
         if (boxesFilled(selectedName, strUnitPriceInput, strUnitQtyInput) == false) {
             giveFillWarning();
-        }else {
+        } else {
         	unitPrice = Double.parseDouble(strUnitPriceInput);
         	unitQty = Integer.parseInt(strUnitQtyInput);
         }
+        
         if (purchaseItem == 0) {
             addPurchase(formattedDate, employeeID);
             purchaseID = getPurchaseID();
@@ -444,6 +444,8 @@ public class PurchaseGUI {
 
     private void openAddWindow() {
         dlgAdd.setVisible(true);
+        purchaseID = 0;
+        purchaseItem = 0;
     }
 
     private void openViewWindowMostRecentFirst() {
@@ -471,6 +473,6 @@ public class PurchaseGUI {
     }
 
     private void deletePurchase(Integer id) {
-        //Sql.deletePurchase(id);
+        Sql.deletePurchase(id);
     }
 }
