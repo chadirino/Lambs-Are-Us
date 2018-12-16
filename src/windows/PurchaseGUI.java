@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.format.DateTimeFormatter;  
 import java.time.LocalDateTime;
-import java.text.*;
 import javax.swing.*;
 import db.*;
 
@@ -22,7 +21,7 @@ public class PurchaseGUI {
     public static JComboBox<String> cbName;
     private String inputSearch, inputDateFrom, inputDateTo, selectedName, strUnitQtyInput, strUnitPriceInput;
     private static String user, formattedDate;
-    private int response;
+    private int response, idSearch;
     private static Integer purchaseItem, unitQty, purchaseID, employeeID;
     private static Double unitPrice;
     private static DateTimeFormatter dateFormat;
@@ -275,7 +274,7 @@ public class PurchaseGUI {
         public void actionPerformed(ActionEvent event) {
             if (event.getSource() == btnSearch) {
                 inputSearch = tfSearch.getText();
-                idSearch = 
+                idSearch = Integer.parseInt(inputSearch);
             } else if (event.getSource() == btnNextItem) {
                 validateNext();
             } else if (event.getSource() == btnDone) {
@@ -327,10 +326,8 @@ public class PurchaseGUI {
         if (boxesFilled() == false) {
             giveFillWarning();
         } else {
-            
             unitPrice = Double.parseDouble(strUnitPriceInput);
         	unitQty = Integer.parseInt(strUnitQtyInput);
-        
 	        if (purchaseItem == 0) {
                 eraseInput();
                 addPurchase(formattedDate, employeeID);
@@ -382,7 +379,6 @@ public class PurchaseGUI {
         }
     }
 
-
     private void validateCancel() {
         if (purchaseItem > 0) {
             response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the purchase?");
@@ -422,7 +418,7 @@ public class PurchaseGUI {
     // --------------- check if boxes filled ----------------
 
     private Boolean boxesFilled() {
-        if (selectedName == null || strUnitPriceInput == null || strUnitQtyInput == null) {
+        if (selectedName == null || strUnitPriceInput == null || strUnitPriceInput.isBlank() || strUnitQtyInput == null || strUnitPriceInput.isBlank()) {
             return false;
         } else {
             return true;
@@ -468,7 +464,7 @@ public class PurchaseGUI {
     }
 
     private Boolean boxesEmpty() {
-        if (selectedName == null && strUnitPriceInput == null && strUnitQtyInput == null) {
+        if (selectedName == null && (strUnitPriceInput == null || strUnitPriceInput.isBlank()) && ((strUnitQtyInput == null || strUnitQtyInput.isBlank()))) {
             return true;
         } else {
             return false;
