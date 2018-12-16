@@ -289,6 +289,27 @@ public class Sql {
 			}
 		DbConnection.disconnect();
 	}
+	
+	// get purchase items
+	public static void getPurchaseItems(int purchaseID) {
+		DbConnection.connect();
+    	try {
+		PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchaseItem where purchaseID = " + purchaseID);
+		ResultSet rs = pst.executeQuery();
+		PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
+	}
+	
+	// add purchase
+	public static void addPurchase() {
+		
+	}
+	
+	
+	
 	// sort by date
 	    public static void setDateRange(String date1, String date2) {
 	    	DbConnection.connect();
