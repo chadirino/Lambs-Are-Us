@@ -20,7 +20,8 @@ public class PurchaseGUI {
     private JLabel lblSearch, lblDateTo, lblDateFrom, lblName, lblUnitQty, lblUnitPrice;
     private JTextField tfSearch, tfDateTo, tfDateFrom, tfUnitQty, tfUnitPrice;
     public static JComboBox<String> cbName;
-    private static String inputSearch, inputDateFrom, inputDateTo, selectedName, strUnitQtyInput, strUnitPriceInput, formattedDate, user;
+    private String inputSearch, inputDateFrom, inputDateTo, selectedName, strUnitQtyInput, strUnitPriceInput;
+    private static String user, formattedDate;
     private static Integer unitQty, employeeID;
     private int response, response2;
     private static Integer purchaseItem, purchaseID;
@@ -275,7 +276,7 @@ public class PurchaseGUI {
                 inputSearch = tfSearch.getText();
                 // search and focus on cell
             } else if (event.getSource() == btnNextItem) {
-                validateAdd();
+                validateNext();
             } else if (event.getSource() == btnDone) {
                 validateDone();
             } else if (event.getSource() == btnCancel) {
@@ -316,7 +317,7 @@ public class PurchaseGUI {
 
     // ------------------- method handler -------------------
 
-    private void validateAdd() {
+    private void validateNext() {
 
         selectedName = (String) cbName.getSelectedItem();
         strUnitPriceInput = tfUnitPrice.getText();
@@ -330,40 +331,58 @@ public class PurchaseGUI {
         	unitQty = Integer.parseInt(strUnitQtyInput);
         
 	        if (purchaseItem == 0) {
-	            addPurchase(formattedDate, employeeID);
+                eraseInput();
+                addPurchase(formattedDate, employeeID);
 	            purchaseID = getPurchaseID();
-	            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+                addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+                IngredientGUI.updateQty(selectedName, unitQty);
 	            purchaseItem++;
 	        } else {
                 eraseInput();
                 addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
                 IngredientGUI.updateQty(selectedName, unitQty);
+                purchaseItem++;
 	        }
         }
     }
 
     private void validateDone() {
         
-        if (boxesEmpty() && purchaseItem == 0) {
-                fAdd.dispose();
-        } else if (boxesEmpty() && purchaseItem > 0) {
-            response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
-            if (response != JOptionPane.YES_OPTION) {
-                fAdd.dispose();
-            }
-        } else if (boxesFilled()) {
-            response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
-            if (response == JOptionPane.YES_OPTION) {
-                validateAdd();
+        selectedName = (String) cbName.getSelectedItem();
+        strUnitPriceInput = tfUnitPrice.getText();
+        strUnitQtyInput = tfUnitQty.getText();
+        
+        if (boxesFilled() == false) {
+            giveFillWarning();
+        } else { 
+
+            unitPrice = Double.parseDouble(strUnitPriceInput);
+        	unitQty = Integer.parseInt(strUnitQtyInput);
+
+            if (boxesEmpty() && purchaseItem == 0) {
+                    fAdd.dispose();
+            } else if (boxesEmpty() && purchaseItem > 0) {
                 response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
                 if (response != JOptionPane.YES_OPTION) {
                     fAdd.dispose();
                 }
-            }
-        } else {
-            response = JOptionPane.showConfirmDialog(null, "Are you finished with this purchase?");
-            if (response == JOptionPane.YES_OPTION) {
-                fAdd.dispose();
+            } else if (boxesFilled()) {
+                response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
+                if (response == JOptionPane.YES_OPTION) {
+                    eraseInput();
+                    addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+                    IngredientGUI.updateQty(selectedName, unitQty);
+                    purchaseItem++;
+                    response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
+                    if (response != JOptionPane.YES_OPTION) {
+                        fAdd.dispose();
+                    }
+                }
+            } else {
+                response = JOptionPane.showConfirmDialog(null, "Are you finished with this purchase?");
+                if (response == JOptionPane.YES_OPTION) {
+                    fAdd.dispose();
+                }
             }
         }
     }
