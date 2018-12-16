@@ -218,6 +218,7 @@ public class IngredientGUI {
             	sortZtoA();
             } else if (event.getSource() == miLogout) {
                 fView.dispose();
+                HomeGUI.fUser.dispose();
                 new LoginGUI();
             }
         }
