@@ -248,16 +248,17 @@ public class Sql {
     }
     
     // add ingredient
-    public static void addIngredient() {
-    	
-    	
+    public static void addIngredient(String name, String unitOfMeasure, int unitsOnHand, int reOrderPoint) {
+    	DbConnection.connect();
+    	try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("insert into ingredient (name, unitOfMeasure, unitsOnHand, reOrderPoint) values('"+name+"', '"+unitOfMeasure+"', 0, " + reOrderPoint + ")");
+			pst.executeUpdate();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
     }
-    
-    // delete ingredient
-    public static void deleteIngredient() {
-    	
-    }
-    
+     
     // add ingredient
     public static void updateQty() {
     	
@@ -272,7 +273,7 @@ public class Sql {
 		try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("select * from purchase");
 			ResultSet rs = pst.executeQuery();
-			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PurchaseGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			}catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -284,7 +285,7 @@ public class Sql {
 	    	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase where date >= \"" + date1 + "\" and date <= \"" + date2 + "\"");
 			ResultSet rs = pst.executeQuery();
-			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PurchaseGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -297,7 +298,7 @@ public class Sql {
 	    	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase order by date");
 			ResultSet rs = pst.executeQuery();
-			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PurchaseGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -310,7 +311,7 @@ public class Sql {
 	    	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase order by date desc");
 			ResultSet rs = pst.executeQuery();
-			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PurchaseGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
