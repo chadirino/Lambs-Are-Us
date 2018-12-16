@@ -21,6 +21,7 @@ public class IngredientGUI {
     JTextField tfName, tfUnitOfMeasure, tfROP;
     Integer ROP;
     MenuItemListener menuListen;
+    ButtonListener buttonListen;
 
     public IngredientGUI() {
         
@@ -92,9 +93,30 @@ public class IngredientGUI {
 
         menuBar = new JMenuBar();
         menuBar.add(menu);
-
+        
         // ======================================================
-        //                         panels
+        //                       buttons
+        // ======================================================
+
+        btnSave = new JButton("Save");
+        btnSave.setPreferredSize(new Dimension(123,25));
+        btnCancel = new JButton("Cancel");
+        btnCancel.setPreferredSize(new Dimension(123,25));
+        
+        // ======================================================
+        //                        Labels/Fields
+        // ======================================================
+        
+        lblName = new JLabel("Name:");
+        tfName = new JTextField(20);
+        lblUnitOfMeasure = new JLabel("Unit of Measure");
+        tfUnitOfMeasure = new JTextField(20);
+        lblROP = new JLabel("Reorder Point");
+        tfROP = new JTextField(20);
+        
+        
+        // ======================================================
+        //                         methods
         // ======================================================
 
         pView = new JPanel();
@@ -173,9 +195,7 @@ public class IngredientGUI {
         pView.setVisible(true);
     }
 
-    // ======================================================
-    //                       buttons
-    // ======================================================
+    
     
     // ======================================================
     //                     event handler
@@ -202,6 +222,18 @@ public class IngredientGUI {
             }
         }
     }
+    
+    private class ButtonListener implements ActionListener {
+    	public void actionPerformed(ActionEvent event) {
+    		if (event.getSource() == btnSave) {
+    			addIngredient();
+    			//updateQty();
+    			} 
+    		else if (event.getSource() == btnCancel) {
+    				fAdd.dispose();
+    				}
+    		}
+    }
 
     // ======================================================
     //                      misc methods
@@ -212,7 +244,7 @@ public class IngredientGUI {
     }
     
     private void addIngredient() {
-        Sql.addIngredient();
+        //Sql.addIngredient();
     }
 
     public static void updateQty(Integer ingredientID, Integer unitQty) {
