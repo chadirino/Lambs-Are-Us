@@ -342,20 +342,26 @@ public class PurchaseGUI {
     }
 
     private void validateDone() {
-        if (boxesEmpty() == false) {
+        
+        if (boxesEmpty() && purchaseItem > 0) {
+            response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
+            if (response != JOptionPane.YES_OPTION) {
+                fAdd.dispose();
+            }
+        } else if (boxesFilled()) {
             response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
             if (response == JOptionPane.YES_OPTION) {
                 validateAdd();
-            } else {
+                response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
+                if (response != JOptionPane.YES_OPTION) {
+                    fAdd.dispose();
+                }
+            }
+        } else {
+            response = JOptionPane.showConfirmDialog(null, "Are you finished with this purchase?");
+            if (response == JOptionPane.YES_OPTION) {
                 fAdd.dispose();
             }
-        } else if (purchaseItem > 0) {
-            response2 = JOptionPane.showConfirmDialog(null, "Save and create purchase?");
-            if (response2 == JOptionPane.YES_OPTION) {
-                fAdd.dispose();
-            } 
-        } else {
-            fAdd.dispose();
         }
     }
 
@@ -397,7 +403,7 @@ public class PurchaseGUI {
     // --------------- check if boxes filled ----------------
 
     private Boolean boxesFilled() {
-        if (selectedName == null || strUnitPriceInput.equals("") || strUnitQtyInput.equals("")) {
+        if (selectedName == null || strUnitPriceInput == null || strUnitQtyInput == null) {
             return false;
         } else {
             return true;
@@ -443,7 +449,7 @@ public class PurchaseGUI {
     }
 
     private Boolean boxesEmpty() {
-        if (selectedName == null && strUnitPriceInput.equals("") && strUnitQtyInput.equals("")) {
+        if (selectedName == null && strUnitPriceInput == null && strUnitQtyInput == null) {
             return true;
         } else {
             return false;
