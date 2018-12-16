@@ -343,7 +343,9 @@ public class PurchaseGUI {
 
     private void validateDone() {
         
-        if (boxesEmpty() && purchaseItem > 0) {
+        if (boxesEmpty() && purchaseItem == 0) {
+                fAdd.dispose();
+        } else if (boxesEmpty() && purchaseItem > 0) {
             response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
             if (response != JOptionPane.YES_OPTION) {
                 fAdd.dispose();
