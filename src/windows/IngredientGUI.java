@@ -10,6 +10,7 @@ public class IngredientGUI {
 
     JFrame fView, fAdd;
     JPanel pView, pAdd, pUpdate;
+    JDialog dlgAdd;
     JMenuBar menuBar;
     JMenu menu, subSort;
     JMenuItem miView, miAdd, miUpdate, miSortDesc, miSortAsc, miLogout;
@@ -104,6 +105,10 @@ public class IngredientGUI {
         pAdd.add(tfName);
         pAdd.add(lblUnitOfMeasure);
         pAdd.add(tfUnitOfMeasure);
+        pAdd.add(lblROP);
+        pAdd.add(tfROP);
+        pAdd.add(btnSave);
+        pAdd.add(btnCancel);
         
         // ======================================================
         //                    frames/dialogs
@@ -120,6 +125,19 @@ public class IngredientGUI {
         fView.setJMenuBar(menuBar);
         fView.setSize(425,300);
         fView.setLocationRelativeTo(null);
+
+        fAdd = new JFrame();
+        dlgAdd = new JDialog(fAdd);
+        dlgAdd.add(pAdd);
+        dlgAdd.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent event) {
+                fAdd.dispose(); 
+            }
+        });
+        dlgAdd.setTitle("Add Ingredient");
+        dlgAdd.setJMenuBar(menuBar);
+        dlgAdd.setSize(425,300);
+        dlgAdd.setLocationRelativeTo(null);
 
         openViewWindow(); 
     }
@@ -142,40 +160,17 @@ public class IngredientGUI {
     }
     
     private void openAddWindow() {
-
+        dlgAdd.setVisible(true);
     }
     
-    private void openViewAtoZ() {
-        switchPage();
+    private void sortAtoZ() {
         Sql.sortAtoZ();
-        pView = new JPanel();
-        pView.add(spNonEdit);
-        cp.add(pView);
+        pView.setVisible(true);
     }
     
-    private void openViewZtoA() {
-        switchPage();
+    private void sortZtoA() {
         Sql.sortZtoA();
-        pView = new JPanel();
-        pView.add(spNonEdit);
-        cp.add(pView);
-    }
-
-    // new ingredient page
-    private void openAdd() {
-        switchPage();
-        pAdd = new JPanel();
-        pAdd.add(spEdit);
-        cp.add(pAdd);
-    }
-
-    // ingredient update page
-    private void openUpdate() {
-        switchPage();
-        Sql.getIngredients();
-        pUpdate = new JPanel();
-        pUpdate.add(spEdit);
-        cp.add(pUpdate);
+        pView.setVisible(true);
     }
 
     // ======================================================
@@ -190,19 +185,19 @@ public class IngredientGUI {
     private class MenuItemListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if (event.getSource() == miView) {
-                openView(); 
+                openViewWindow(); 
             } else if (event.getSource() == miAdd) {
-                openAdd(); 
+                openAddWindow(); 
             } else if (event.getSource() == miUpdate) {
-                openUpdate(); 
+                // openUpdate(); 
             } else if (event.getSource() == miSortDesc) {
                 // sort descending
-            	openViewAtoZ();
+            	sortAtoZ();
             } else if (event.getSource() == miSortAsc) {
                 // sort ascending
-            	openViewZtoA();
+            	sortZtoA();
             } else if (event.getSource() == miLogout) {
-                dispose();
+                fView.dispose();
                 new LoginGUI();
             }
         }
@@ -217,7 +212,7 @@ public class IngredientGUI {
     }
     
     private void addIngredient() {
-        Sql.addIngredient();
+        //Sql.addIngredient();
     }
 
     public static void updateQty(Integer ingredientID, Integer unitQty) {
