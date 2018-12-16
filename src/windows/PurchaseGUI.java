@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.text.*;
 import javax.swing.*;
-import javax.swing.table.*;
 import db.*;
 
 public class PurchaseGUI {
@@ -21,13 +20,13 @@ public class PurchaseGUI {
     private JLabel lblSearch, lblDateTo, lblDateFrom, lblName, lblUnitQty, lblUnitPrice;
     private JTextField tfSearch, tfDateTo, tfDateFrom, tfUnitQty, tfUnitPrice;
     public static JComboBox<String> cbName;
-    private String inputSearch, inputDateFrom, inputDateTo, selectedName, strUnitQtyInput, strUnitPriceInput, formattedDate, user;
+    private static String inputSearch, inputDateFrom, inputDateTo, selectedName, strUnitQtyInput, strUnitPriceInput, formattedDate, user;
     private static Integer unitQty, employeeID;
     private int response, response2;
     private static Integer purchaseItem, purchaseID;
     private static Double unitPrice;
-    private DateTimeFormatter dateFormat;
-    private LocalDateTime date;
+    private static DateTimeFormatter dateFormat;
+    private static LocalDateTime date;
     public static JTable tblView, tblItems;
     private JScrollPane spView, spItems;
     private MenuItemListener menuListen;
@@ -319,21 +318,15 @@ public class PurchaseGUI {
 
     private void validateAdd() {
 
-        user = LoginGUI.user;
-        employeeID = getEmployeeID(user);
-        dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        date = LocalDateTime.now();
-        formattedDate = dateFormat.format(date);
         selectedName = (String) cbName.getSelectedItem();
         strUnitPriceInput = tfUnitPrice.getText();
         strUnitQtyInput = tfUnitQty.getText();
-        System.out.println(selectedName);
-        System.out.println(strUnitPriceInput);
-        System.out.println(strUnitQtyInput);
+        
         if (boxesFilled() == false) {
             giveFillWarning();
         } else {
-        	unitPrice = Double.parseDouble(strUnitPriceInput);
+            
+            unitPrice = Double.parseDouble(strUnitPriceInput);
         	unitQty = Integer.parseInt(strUnitQtyInput);
         
 	        if (purchaseItem == 0) {
@@ -342,12 +335,41 @@ public class PurchaseGUI {
 	            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
 	            purchaseItem++;
 	        } else {
-	            eraseInput();
+                eraseInput();
 	            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
 	        }
         }
     }
 
+    private void validateDone() {
+        if (boxesEmpty() == false) {
+            response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
+            if (response == JOptionPane.YES_OPTION) {
+                validateAdd();
+            } else {
+                fAdd.dispose();
+            }
+        } else if (purchaseItem > 0) {
+            response2 = JOptionPane.showConfirmDialog(null, "Save and create purchase?");
+            if (response2 == JOptionPane.YES_OPTION) {
+                fAdd.dispose();
+            } 
+        } else {
+            fAdd.dispose();
+        }
+    }
+
+    private void validateCancel() {
+        if (purchaseItem > 0) {
+            response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the purchase?");
+            if (response == JOptionPane.YES_OPTION) {
+                deletePurchase(purchaseID); 
+            }
+        } else {
+            fAdd.dispose();
+        }
+    }
+    
     // ------------------ get employee id -------------------
     
     private Integer getEmployeeID(String user) {
@@ -400,6 +422,17 @@ public class PurchaseGUI {
     //                      misc methods
     // ======================================================
 
+    private void openAddWindow() {
+        dlgAdd.setVisible(true);
+        purchaseID = 0;
+        purchaseItem = 0;
+        user = LoginGUI.user;
+        employeeID = getEmployeeID(user);
+        dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        date = LocalDateTime.now();
+        formattedDate = dateFormat.format(date);
+    }
+    
     private void openSetRangeDialog() {
         dlgDateRange.setVisible(true);
     }
@@ -417,47 +450,12 @@ public class PurchaseGUI {
         }
     }
 
-    private void validateCancel() {
-        if (purchaseItem > 0) {
-            response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the purchase?");
-            if (response == JOptionPane.YES_OPTION) {
-                deletePurchase(purchaseID); 
-            }
-        } else {
-            fAdd.dispose();
-        }
-    }
-
-    private void validateDone() {
-        if (boxesEmpty() == false) {
-            response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
-            if (response == JOptionPane.YES_OPTION) {
-                validateAdd();
-            } else {
-                fAdd.dispose();
-            }
-        } else if (purchaseItem > 0) {
-            response2 = JOptionPane.showConfirmDialog(null, "Save and create purchase?");
-            if (response2 == JOptionPane.YES_OPTION) {
-                fAdd.dispose();
-            } 
-        } else {
-            fAdd.dispose();
-        }
-    }
-
     // ======================================================
     //                 database interactions
     // ======================================================
     
     private void getPurchases() {
         Sql.getPurchases();
-    }
-
-    private void openAddWindow() {
-        dlgAdd.setVisible(true);
-        purchaseID = 0;
-        purchaseItem = 0;
     }
 
     private void openViewWindowMostRecentFirst() {
