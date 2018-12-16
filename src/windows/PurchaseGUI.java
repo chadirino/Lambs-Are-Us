@@ -22,9 +22,10 @@ public class PurchaseGUI {
     private JTextField tfSearch, tfDateTo, tfDateFrom, tfUnitQty, tfUnitPrice;
     public static JComboBox<String> cbName;
     private String inputSearch, inputDateFrom, inputDateTo, selectedName, strUnitQtyInput, strUnitPriceInput, formattedDate, user;
-    private Integer unitQty, employeeID;
+    private static Integer unitQty, employeeID;
+    private int response, response2;
     private static Integer purchaseItem, purchaseID;
-    private Double unitPrice;
+    private static Double unitPrice;
     private DateTimeFormatter dateFormat;
     private LocalDateTime date;
     public static JTable tblEdit, tblNonEdit;
@@ -255,14 +256,12 @@ public class PurchaseGUI {
                 inputSearch = tfSearch.getText();
                 // search and focus on cell
             } else if (event.getSource() == btnNextItem) {
+                // delete other fields user inputs
                 validateAdd();
             } else if (event.getSource() == btnDone) {
-                showVerifyDialog();
-                fAdd.dispose();
-                openViewWindow();
+                validateDone();
             } else if (event.getSource() == btnCancel) {
                 validateCancel();
-                openViewWindow();
             } else if (event.getSource() == btnDateRangeOK) {
                 setDateRange();
             } else if (event.getSource() == btnDateRangeCancel) {
@@ -314,7 +313,7 @@ public class PurchaseGUI {
         strUnitQtyInput = tfUnitQty.getText();
         unitQty = Integer.parseInt(strUnitQtyInput);
 
-        if (boxesFilled(strUnitPriceInput, strUnitQtyInput) == false) {
+        if (boxesFilled(selectedName, strUnitPriceInput, strUnitQtyInput) == false) {
             giveFillWarning();
         } else if (purchaseItem == 0) {
             addPurchase(formattedDate, employeeID);
@@ -322,7 +321,8 @@ public class PurchaseGUI {
             addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
             purchaseItem++;
         } else {
-            addPurchaseItem();
+            eraseInput();
+            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
         }
     }
 
@@ -338,13 +338,13 @@ public class PurchaseGUI {
         return Sql.getPurchaseID();
     }
     
-    // ------------------ create purchase -------------------
+    // -------------------- add purchase --------------------
 
     private void addPurchase(String date, Integer empID) {
         Sql.addPurchase(date, empID);
     }
 
-    // ------------------ create purchase -------------------
+    // ----------------- add purchase item ------------------
 
     private void addPurchaseItem(Integer purchaseID, String name, Double price, Integer qty) {
     	Sql.addPurchaseItem(purchaseID, name, price, qty);
@@ -352,8 +352,8 @@ public class PurchaseGUI {
     
     // --------------- check if boxes filled ----------------
 
-    private Boolean boxesFilled(String price, String qty) {
-        if (price.equals("") || qty.equals("")) {
+    private Boolean boxesFilled(String name, String price, String qty) {
+        if (name.equals("") || price.equals("") || qty.equals("")) {
             return false;
         } else {
             return true;
@@ -364,6 +364,14 @@ public class PurchaseGUI {
 
     private void giveFillWarning() {
         JOptionPane.showMessageDialog(null, "Form not completely filled out."); 
+    }
+
+    // ----------------- show fill warning ------------------
+
+    private void eraseInput() {
+        cbName.setSelectedIndex(-1);
+        tfUnitPrice.setText("");
+        tfUnitQty.setText("");
     }
 
     // ======================================================
@@ -381,7 +389,28 @@ public class PurchaseGUI {
 
     private void validateCancel() {
         if (purchaseItem > 0) {
-            respose = JOptionPane.showConfirmDialog(null, "Do you want to save the purchase?");
+            response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the purchase?");
+            if (response == JOptionPane.YES_OPTION) {
+                deletePurchase(purchaseID); 
+            }
+        } else {
+            fAdd.dispose();
+        }
+    }
+
+    private void validateDone() {
+        if (boxesFilled(selectedName, strUnitPriceInput, strUnitQtyInput)) {
+            response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
+            if (response == JOptionPane.YES_OPTION) {
+                validateAdd();
+            } else {
+                fAdd.dispose();
+            }
+        } else {
+            response2 = JOptionPane.showConfirmDialog(null, "Save and create purchase?");
+            if (response2 == JOptionPane.YES_OPTION) {
+                fAdd.dispose();
+            } 
         }
     }
 
@@ -419,5 +448,9 @@ public class PurchaseGUI {
     
     private void getUserCB() {
         Sql.getUserCB();
+    }
+
+    private void deletePurchase(Integer id) {
+        Sql.deletePurchase(id);
     }
 }
