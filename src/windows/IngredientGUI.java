@@ -3,25 +3,25 @@ package windows;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.table.*;
 import db.*;
 
 public class IngredientGUI {
 
-    JFrame fView, fAdd;
-    JPanel pView, pAdd, pUpdate;
-    JDialog dlgAdd;
-    JMenuBar menuBar;
-    JMenu menu, subSort;
-    JMenuItem miView, miAdd, miUpdate, miSortDesc, miSortAsc, miLogout;
+    public JFrame fView, fAdd;
+    private JPanel pView, pAdd;
+    private JDialog dlgAdd;
+    private JMenuBar menuBar;
+    private JMenu menu, subSort;
+    private JMenuItem miView, miAdd, miSortDesc, miSortAsc, miLogout;
     public static JTable tblView;
-    JScrollPane spView;
-    JButton btnSave, btnCancel;
-    JLabel lblName, lblUnitOfMeasure, lblROP;
-    JTextField tfName, tfUnitOfMeasure, tfROP;
-    Integer ROP;
-    MenuItemListener menuListen;
-    ButtonListener buttonListen;
+    private JScrollPane spView;
+    private JButton btnSave, btnCancel;
+    private JLabel lblName, lblUnitOfMeasure, lblROP;
+    private JTextField tfName, tfUnitOfMeasure, tfROP;
+    private String strNameInput, strUOMInput, strROPInput;
+    private Integer ROP;
+    private MenuItemListener menuListen;
+    private ButtonListener buttonListen;
 
     public IngredientGUI() {
         
@@ -56,7 +56,6 @@ public class IngredientGUI {
         // menu menu items
         miView = new JMenuItem("View list of ingredients");
         miAdd = new JMenuItem("Add new ingredient");
-        miUpdate = new JMenuItem("Update existing ingredient");
         miLogout = new JMenuItem("Logout");
         
         // submenu menu items
@@ -66,7 +65,6 @@ public class IngredientGUI {
         // add listener to menu items
         miView.addActionListener(menuListen);
         miAdd.addActionListener(menuListen);
-        miUpdate.addActionListener(menuListen);
         miSortDesc.addActionListener(menuListen);
         miSortAsc.addActionListener(menuListen);
         miLogout.addActionListener(menuListen);
@@ -83,7 +81,6 @@ public class IngredientGUI {
         menu.setMnemonic(KeyEvent.VK_M);
         menu.add(miView);
         menu.add(miAdd);
-        menu.add(miUpdate);
         menu.addSeparator();
         menu.add(subSort);
         menu.addSeparator();
@@ -102,6 +99,9 @@ public class IngredientGUI {
         btnSave.setPreferredSize(new Dimension(123,25));
         btnCancel = new JButton("Cancel");
         btnCancel.setPreferredSize(new Dimension(123,25));
+
+        btnSave.addActionListener(buttonListen);
+        btnCancel.addActionListener(buttonListen);
         
         // ======================================================
         //                        Labels/Fields
@@ -113,7 +113,6 @@ public class IngredientGUI {
         tfUnitOfMeasure = new JTextField(20);
         lblROP = new JLabel("Reorder Point");
         tfROP = new JTextField(20);
-        
         
         // ======================================================
         //                         methods
@@ -173,7 +172,7 @@ public class IngredientGUI {
     }
 
     // ======================================================
-    //                         panels
+    //                        methods
     // ======================================================
     
     private void openViewWindow() {
@@ -194,11 +193,9 @@ public class IngredientGUI {
         Sql.sortZtoA();
         pView.setVisible(true);
     }
-
-    
     
     // ======================================================
-    //                     event handler
+    //                     event handlers
     // ======================================================
     
     // menu items
@@ -208,13 +205,9 @@ public class IngredientGUI {
                 openViewWindow(); 
             } else if (event.getSource() == miAdd) {
                 openAddWindow(); 
-            } else if (event.getSource() == miUpdate) {
-                // openUpdate(); 
             } else if (event.getSource() == miSortDesc) {
-                // sort descending
             	sortAtoZ();
             } else if (event.getSource() == miSortAsc) {
-                // sort ascending
             	sortZtoA();
             } else if (event.getSource() == miLogout) {
                 fView.dispose();
@@ -223,20 +216,19 @@ public class IngredientGUI {
         }
     }
     
+    // buttons 
     private class ButtonListener implements ActionListener {
     	public void actionPerformed(ActionEvent event) {
     		if (event.getSource() == btnSave) {
     			addIngredient();
-    			//updateQty();
-    			} 
-    		else if (event.getSource() == btnCancel) {
-    				fAdd.dispose();
-    				}
+    		} else if (event.getSource() == btnCancel) {
+    			fAdd.dispose();
     		}
+    	}
     }
 
     // ======================================================
-    //                      misc methods
+    //                  database interactions
     // ======================================================
 
     private void getIngredients() {
@@ -244,10 +236,16 @@ public class IngredientGUI {
     }
     
     private void addIngredient() {
-        //Sql.addIngredient();
+        
+        strNameInput = tfName.getText();
+        strUOMInput = tfUnitOfMeasure.getText();
+        strROPInput = tfROP.getText();
+        ROP = Integer.parseInt(strROPInput);
+
+        Sql.addIngredient(strNameInput, strUOMInput, ROP);
     }
 
-    public static void updateQty(Integer ingredientID, Integer unitQty) {
-        Sql.updateQty();
+    public static void updateQty(String name, Integer unitQty) {
+        Sql.updateQty(name, unitQty);
     }
 }
