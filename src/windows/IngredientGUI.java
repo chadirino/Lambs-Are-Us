@@ -109,9 +109,9 @@ public class IngredientGUI {
         
         lblName = new JLabel("Name:");
         tfName = new JTextField(20);
-        lblUnitOfMeasure = new JLabel("Unit of Measure");
+        lblUnitOfMeasure = new JLabel("Unit of Measure:");
         tfUnitOfMeasure = new JTextField(20);
-        lblROP = new JLabel("Reorder Point");
+        lblROP = new JLabel("Reorder Point:");
         tfROP = new JTextField(20);
         
         // ======================================================
@@ -156,8 +156,7 @@ public class IngredientGUI {
             }
         });
         dlgAdd.setTitle("Add Ingredient");
-        dlgAdd.setJMenuBar(menuBar);
-        dlgAdd.setSize(425,300);
+        dlgAdd.setSize(355,175);
         dlgAdd.setLocationRelativeTo(null);
 
         openViewWindow(); 
@@ -177,7 +176,7 @@ public class IngredientGUI {
     
     private void openViewWindow() {
         getIngredients();
-        pView.setVisible(true);
+        fView.setVisible(true);
     }
     
     private void openAddWindow() {
@@ -186,12 +185,12 @@ public class IngredientGUI {
     
     private void sortAtoZ() {
         Sql.sortAtoZ();
-        pView.setVisible(true);
+        fView.setVisible(true);
     }
     
     private void sortZtoA() {
         Sql.sortZtoA();
-        pView.setVisible(true);
+        fView.setVisible(true);
     }
     
     // ======================================================
@@ -220,7 +219,9 @@ public class IngredientGUI {
     private class ButtonListener implements ActionListener {
     	public void actionPerformed(ActionEvent event) {
     		if (event.getSource() == btnSave) {
-    			addIngredient();
+                addIngredient();
+                fAdd.dispose();
+                JOptionPane.showMessageDialog(null, strNameInput + " successfully added.");
     		} else if (event.getSource() == btnCancel) {
     			fAdd.dispose();
     		}
