@@ -7,7 +7,7 @@ import db.*;
 
 public class IngredientGUI {
 
-    public JFrame fView, fAdd;
+    private static JFrame fView, fAdd;
     private JPanel pView, pAdd;
     private JDialog dlgAdd;
     private JMenuBar menuBar;
@@ -30,7 +30,7 @@ public class IngredientGUI {
         // ======================================================
 
         tblView = new JTable();
-        // tblNonEdit.addMouseListener(new MouseAdapter() {
+        // tblView.addMouseListener(new MouseAdapter() {
         //     public void mousePressed(MouseEvent event) {
         //         JTable table =(JTable) event.getSource();
         //         Point point = event.getPoint();
@@ -100,6 +100,7 @@ public class IngredientGUI {
         btnCancel = new JButton("Cancel");
         btnCancel.setPreferredSize(new Dimension(123,25));
 
+        buttonListen = new ButtonListener();
         btnSave.addActionListener(buttonListen);
         btnCancel.addActionListener(buttonListen);
         
@@ -167,7 +168,10 @@ public class IngredientGUI {
     // ======================================================
 
     public static void main(String[] args) {
-        new IngredientGUI();
+        
+        new IngredientGUI().dlgAdd.setVisible(true);
+        fAdd.dispose();
+        // new IngredientGUI();
     }
 
     // ======================================================
