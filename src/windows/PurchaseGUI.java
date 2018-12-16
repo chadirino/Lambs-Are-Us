@@ -327,22 +327,24 @@ public class PurchaseGUI {
         selectedName = (String) cbName.getSelectedItem();
         strUnitPriceInput = tfUnitPrice.getText();
         strUnitQtyInput = tfUnitQty.getText();
-        
+        System.out.println(selectedName);
+        System.out.println(strUnitPriceInput);
+        System.out.println(strUnitQtyInput);
         if (boxesFilled(selectedName, strUnitPriceInput, strUnitQtyInput) == false) {
             giveFillWarning();
         } else {
         	unitPrice = Double.parseDouble(strUnitPriceInput);
         	unitQty = Integer.parseInt(strUnitQtyInput);
-        }
         
-        if (purchaseItem == 0) {
-            addPurchase(formattedDate, employeeID);
-            purchaseID = getPurchaseID();
-            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
-            purchaseItem++;
-        } else {
-            eraseInput();
-            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+	        if (purchaseItem == 0) {
+	            addPurchase(formattedDate, employeeID);
+	            purchaseID = getPurchaseID();
+	            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+	            purchaseItem++;
+	        } else {
+	            eraseInput();
+	            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+	        }
         }
     }
 
@@ -373,7 +375,7 @@ public class PurchaseGUI {
     // --------------- check if boxes filled ----------------
 
     private Boolean boxesFilled(String name, String price, String qty) {
-        if (name.equals("") || price.equals("") || qty.equals("")) {
+        if (name == null || price.equals("") || qty.equals("")) {
             return false;
         } else {
             return true;
