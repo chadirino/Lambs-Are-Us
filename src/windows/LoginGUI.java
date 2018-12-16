@@ -194,7 +194,6 @@ public class LoginGUI {
     
     public static void main(String[] args) {
         new LoginGUI();
-        // System.out.println(Sql.validCredentials("jbond", "jbond1"));
     }
 
     // ======================================================
@@ -234,9 +233,7 @@ public class LoginGUI {
         } else if (firstLogin(strPswdInput) == true) {
             dlgSetPswd.setVisible(true);
         } else {
-            System.out.println("opening home...");
             openHomeGUI(getUserType(strUserInput));
-            System.out.println("opened");
         }
     }
 

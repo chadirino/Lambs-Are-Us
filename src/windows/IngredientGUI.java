@@ -6,17 +6,19 @@ import javax.swing.*;
 import javax.swing.table.*;
 import db.*;
 
-public class IngredientGUI extends JFrame {
+public class IngredientGUI {
 
-	Container cp;
+    JFrame fView, fAdd;
+    JPanel pView, pAdd, pUpdate;
     JMenuBar menuBar;
     JMenu menu, subSort;
     JMenuItem miView, miAdd, miUpdate, miSortDesc, miSortAsc, miLogout;
-    JPanel pView, pAdd, pUpdate;
+    public static JTable tblView;
+    JScrollPane spView;
     JButton btnSave, btnCancel;
-    public static JTable tblEdit, tblNonEdit;
-    JScrollPane spEdit, spNonEdit;
-    TableModel tmNonEdit, tmEdit;
+    JLabel lblName, lblUnitOfMeasure, lblROP;
+    JTextField tfName, tfUnitOfMeasure, tfROP;
+    Integer ROP;
     MenuItemListener menuListen;
 
     public IngredientGUI() {
@@ -25,8 +27,7 @@ public class IngredientGUI extends JFrame {
         //                        tables
         // ======================================================
 
-        // non-editable table for initial page
-        tblNonEdit = new JTable();
+        tblView = new JTable();
         // tblNonEdit.addMouseListener(new MouseAdapter() {
         //     public void mousePressed(MouseEvent event) {
         //         JTable table =(JTable) event.getSource();
@@ -37,25 +38,9 @@ public class IngredientGUI extends JFrame {
         //         }
         //     }
         // });
-        
-        // // editable table for update page
-        tblEdit = new JTable();
-        // tblEdit.addMouseListener(new MouseAdapter() {
-        //     public void mousePressed(MouseEvent event) {
-        //         JTable table =(JTable) event.getSource();
-        //         Point point = event.getPoint();
-        //         int row = table.rowAtPoint(point);
-        //         if (event.getClickCount() == 2 && table.getSelectedRow() != -1) {
-        //             System.out.print(row); 
-        //         }
-        //     }
-        // });
 
-        // put tables inside scroll panes (give them scroll bars)
-        spNonEdit = new JScrollPane(tblNonEdit);
-        spNonEdit.setPreferredSize(new Dimension(375,200));
-        spEdit = new JScrollPane(tblEdit);
-        spEdit.setPreferredSize(new Dimension(375,200));
+        spView = new JScrollPane(tblView);
+        spView.setPreferredSize(new Dimension(375,200));
 
         // ======================================================
         //                          menu
@@ -82,6 +67,7 @@ public class IngredientGUI extends JFrame {
         miUpdate.addActionListener(menuListen);
         miSortDesc.addActionListener(menuListen);
         miSortAsc.addActionListener(menuListen);
+        miLogout.addActionListener(menuListen);
 
         // ----------------------- menu -------------------------
         
@@ -105,28 +91,37 @@ public class IngredientGUI extends JFrame {
 
         menuBar = new JMenuBar();
         menuBar.add(menu);
-        
-        // ======================================================
-        //                         window
-        // ======================================================
-        
-        // content pane
-        cp = getContentPane();
 
-        addWindowListener(new WindowAdapter() {
+        // ======================================================
+        //                         panels
+        // ======================================================
+
+        pView = new JPanel();
+        pView.add(spView);
+
+        pAdd = new JPanel();
+        pAdd.add(lblName);
+        pAdd.add(tfName);
+        pAdd.add(lblUnitOfMeasure);
+        pAdd.add(tfUnitOfMeasure);
+        
+        // ======================================================
+        //                    frames/dialogs
+        // ======================================================
+        
+        fView = new JFrame();
+        fView.add(pView);
+        fView.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
-                // ConnectDB.disconnect();
-                dispose(); 
+                fView.dispose(); 
             }
         });
-        setTitle("Ingredient Manager");
-        setJMenuBar(menuBar);
-        setSize(425,300);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        fView.setTitle("Ingredient Manager");
+        fView.setJMenuBar(menuBar);
+        fView.setSize(425,300);
+        fView.setLocationRelativeTo(null);
 
-        // open initial page
-        openView(); 
+        openViewWindow(); 
     }
     
     // ======================================================
@@ -141,10 +136,26 @@ public class IngredientGUI extends JFrame {
     //                         panels
     // ======================================================
     
-    // ingredient list page
-    private void openView() {
+    private void openViewWindow() {
+        getIngredients();
+        pView.setVisible(true);
+    }
+    
+    private void openAddWindow() {
+
+    }
+    
+    private void openViewAtoZ() {
         switchPage();
-        Sql.getIngredients();
+        Sql.sortAtoZ();
+        pView = new JPanel();
+        pView.add(spNonEdit);
+        cp.add(pView);
+    }
+    
+    private void openViewZtoA() {
+        switchPage();
+        Sql.sortZtoA();
         pView = new JPanel();
         pView.add(spNonEdit);
         cp.add(pView);
@@ -186,8 +197,10 @@ public class IngredientGUI extends JFrame {
                 openUpdate(); 
             } else if (event.getSource() == miSortDesc) {
                 // sort descending
+            	openViewAtoZ();
             } else if (event.getSource() == miSortAsc) {
                 // sort ascending
+            	openViewZtoA();
             } else if (event.getSource() == miLogout) {
                 dispose();
                 new LoginGUI();
@@ -199,27 +212,15 @@ public class IngredientGUI extends JFrame {
     //                      misc methods
     // ======================================================
 
-    // method to wipe content pane (for switching panels)
-    private void switchPage() { 
-        cp.removeAll();
-        cp.revalidate();
-        cp.repaint();
-    }
-
     private void getIngredients() {
-        
+        Sql.getIngredients();
     }
     
     private void addIngredient() {
-
+        Sql.addIngredient();
     }
 
-    private void deleteIngredient() {
-
+    public static void updateQty(Integer ingredientID, Integer unitQty) {
+        Sql.updateQty();
     }
-
-    private void updateQty() {
-
-    }
-	
 }
