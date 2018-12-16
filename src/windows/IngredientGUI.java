@@ -227,10 +227,15 @@ public class IngredientGUI {
     private class ButtonListener implements ActionListener {
     	public void actionPerformed(ActionEvent event) {
     		if (event.getSource() == btnSave) {
-                addIngredient();
-                fAdd.dispose();
-                JOptionPane.showMessageDialog(null, strNameInput + " successfully added.");
-                refreshViewWindow();
+    			if (validAddIngredient(strNameInput, strUOMInput, strROPInput) == true) {
+	                addIngredient();
+	                fAdd.dispose();
+	                JOptionPane.showMessageDialog(null, strNameInput + " successfully added.");
+	                refreshViewWindow();
+    			}
+    			else {
+    				JOptionPane.showMessageDialog(null, "Please fill all existing fields.");
+    			}
     		} else if (event.getSource() == btnCancel) {
     			fAdd.dispose();
     		}
@@ -249,7 +254,7 @@ public class IngredientGUI {
         
         strNameInput = tfName.getText();
         strUOMInput = tfUnitOfMeasure.getText();
-        strROPInput = tfROP.getText();
+        strROPInput = tfROP.getText(); 
         ROP = Integer.parseInt(strROPInput);
 
         Sql.addIngredient(strNameInput, strUOMInput, ROP);
@@ -258,4 +263,23 @@ public class IngredientGUI {
     public static void updateQty(String name, Integer unitQty) {
         Sql.updateQty(name, unitQty);
     }
+
+    // ======================================================
+    //                  error handling
+    // ======================================================
+    
+    //----------- check if completely filled out -----------
+    private boolean validAddIngredient(String name, String uom, String rop) {
+        
+    	name = tfName.getText();
+        uom = tfUnitOfMeasure.getText();
+        rop = tfROP.getText();
+        
+        if (name.equals("") || uom.equals("") || rop.equals("")) {
+            return false;
+        } else {
+            return true;
+        }     
+    }
+
 }
