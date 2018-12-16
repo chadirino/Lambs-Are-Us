@@ -168,10 +168,7 @@ public class IngredientGUI {
     // ======================================================
 
     public static void main(String[] args) {
-        
-        new IngredientGUI().dlgAdd.setVisible(true);
-        fAdd.dispose();
-        // new IngredientGUI();
+        new IngredientGUI();
     }
 
     // ======================================================
@@ -179,6 +176,7 @@ public class IngredientGUI {
     // ======================================================
     
     private void openViewWindow() {
+        refreshViewWindow();
         fView.setVisible(true);
     }
 
