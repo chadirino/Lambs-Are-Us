@@ -214,7 +214,7 @@ public class Sql {
 		try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("select * from ingredient");
 			ResultSet rs = pst.executeQuery();
-			IngredientGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			IngredientGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			}catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -227,7 +227,7 @@ public class Sql {
     	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from ingredient order by name");
 			ResultSet rs = pst.executeQuery();
-			IngredientGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			IngredientGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -240,7 +240,7 @@ public class Sql {
     	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from ingredient order by name desc");
 			ResultSet rs = pst.executeQuery();
-			IngredientGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			IngredientGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -248,19 +248,30 @@ public class Sql {
     }
     
     // add ingredient
-    public static void addIngredient() {
-    	
-    	
+    public static void addIngredient(String name, String unitOfMeasure, int reOrderPoint) {
+    	DbConnection.connect();
+    	try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("insert into ingredient (name, unitOfMeasure, unitsOnHand, reOrderPoint) values('"+name+"', '"+unitOfMeasure+"', 0, " + reOrderPoint + ")");
+			pst.executeUpdate();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
     }
-    
-    // delete ingredient
-    public static void deleteIngredient() {
-    	
-    }
-    
+     
     // add ingredient
-    public static void updateQty() {
-    	
+    public static void updateQty(String name, int unitQty) {
+    	DbConnection.connect();
+    	try {PreparedStatement pst1 = DbConnection.con.prepareStatement("select * from ingredient where name = '" + name + "'");
+    		ResultSet rs1 = pst1.executeQuery();
+    		int newQuantity = rs1.getInt("unitsOnHand") + unitQty;
+    		
+			PreparedStatement pst = DbConnection.con.prepareStatement("update ingredient set name = '"+name+"', unitsOnHand = "+newQuantity);
+			pst.executeUpdate();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
     }
     
 
