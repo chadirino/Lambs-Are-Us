@@ -303,9 +303,51 @@ public class Sql {
 		DbConnection.disconnect();
 	}
 	
-	// add purchase
-	public static void addPurchase() {
+	// get Employee ID
+	public static int getEmployeeID(String user) {
+		DbConnection.connect();
+		int employeeID = 0;
+    	try {
+		PreparedStatement pst = DbConnection.con.prepareStatement("Select * from userLogin where username = '" + user + "'");
+		ResultSet rs = pst.executeQuery();
+		employeeID = rs.getInt("employeeID");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
 		
+		return employeeID;
+	}
+	
+	//get Purchase ID
+	public static int getPurchaseID() {
+		int purchaseID = 0;
+		DbConnection.connect();
+		try {
+		PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase");
+		ResultSet rs = pst.executeQuery();
+		while (rs.next()) {
+			purchaseID = rs.getInt("purchaseID");
+		}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
+		
+		return purchaseID;
+	}
+	
+	
+	// add purchase
+	public static void addPurchase(String date, int employeeID) {
+		DbConnection.connect();
+    	try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("insert into purchase (date, employeeID) values('"+date+"', " + employeeID);
+			pst.executeUpdate();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
 	}
 	
 	
@@ -346,6 +388,25 @@ public class Sql {
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
+			DbConnection.disconnect();
+	    }
+	    
+	    
+	// JComboBox
+	    public static void getUserCB() {
+	    	DbConnection.connect();
+			try {
+				PreparedStatement pst = DbConnection.con.prepareStatement("select * from ingredient");
+				ResultSet rs = pst.executeQuery();
+				while (rs.next()) {
+					String name = rs.getString("name");
+					PurchaseGUI.cbName.addItem(name);
+				}
+				
+			} catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+			
 			DbConnection.disconnect();
 	    }
 	    
