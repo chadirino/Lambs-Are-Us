@@ -336,7 +336,8 @@ public class PurchaseGUI {
 	            purchaseItem++;
 	        } else {
                 eraseInput();
-	            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+                addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+                IngredientGUI.updateQty(selectedName, unitQty);
 	        }
         }
     }
