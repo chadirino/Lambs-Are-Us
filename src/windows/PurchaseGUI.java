@@ -22,9 +22,8 @@ public class PurchaseGUI {
     public static JComboBox<String> cbName;
     private String inputSearch, inputDateFrom, inputDateTo, selectedName, strUnitQtyInput, strUnitPriceInput;
     private static String user, formattedDate;
-    private static Integer unitQty, employeeID;
-    private int response, response2;
-    private static Integer purchaseItem, purchaseID;
+    private int response;
+    private static Integer purchaseItem, unitQty, purchaseID, employeeID;
     private static Double unitPrice;
     private static DateTimeFormatter dateFormat;
     private static LocalDateTime date;
@@ -69,8 +68,10 @@ public class PurchaseGUI {
                 JTable table =(JTable) event.getSource();
                 Point point = event.getPoint();
                 int row = table.rowAtPoint(point);
+                Object id = table.getModel().getValueAt(row, 0);
+                Integer employeeID = (Integer) id;
                 if (event.getClickCount() == 2 && table.getSelectedRow() != -1) {
-                    getPurchaseItems(row);
+                    getPurchaseItems(employeeID);
                 }
             }
         });
@@ -240,7 +241,7 @@ public class PurchaseGUI {
                 fAdd.dispose(); 
             }
         });
-        dlgAdd.setSize(350,200);
+        dlgAdd.setSize(325,200);
         dlgAdd.setLocationRelativeTo(null);
 
         // ------------------ view items -----------------------
@@ -274,7 +275,7 @@ public class PurchaseGUI {
         public void actionPerformed(ActionEvent event) {
             if (event.getSource() == btnSearch) {
                 inputSearch = tfSearch.getText();
-                // search and focus on cell
+                idSearch = 
             } else if (event.getSource() == btnNextItem) {
                 validateNext();
             } else if (event.getSource() == btnDone) {
