@@ -283,7 +283,7 @@ public class Sql {
 		try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("select * from purchase");
 			ResultSet rs = pst.executeQuery();
-			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PurchaseGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			}catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -296,7 +296,7 @@ public class Sql {
     	try {
 		PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchaseItem where purchaseID = " + purchaseID);
 		ResultSet rs = pst.executeQuery();
-		PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+		PurchaseGUI.tblItems.setModel(DbUtils.resultSetToTableModel(rs));
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -350,6 +350,18 @@ public class Sql {
 		DbConnection.disconnect();
 	}
 	
+	//add purchase item
+	public static void addPurchaseItem(int purchaseID, String name, double price, int qty) {
+		DbConnection.connect();
+    	try {
+			PreparedStatement pst = DbConnection.con.prepareStatement("insert into purchaseItem (purchaseID, name, unitPrice, unitQty) values(" + purchaseID + ", '" + name + "', " + price + ", " + qty);
+			pst.executeUpdate();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		DbConnection.disconnect();
+	}
+	
 	
 	
 	// sort by date
@@ -358,7 +370,7 @@ public class Sql {
 	    	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase where date >= \"" + date1 + "\" and date <= \"" + date2 + "\"");
 			ResultSet rs = pst.executeQuery();
-			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PurchaseGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -371,7 +383,7 @@ public class Sql {
 	    	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase order by date");
 			ResultSet rs = pst.executeQuery();
-			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PurchaseGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -384,7 +396,7 @@ public class Sql {
 	    	try {
 			PreparedStatement pst = DbConnection.con.prepareStatement("Select * from purchase order by date desc");
 			ResultSet rs = pst.executeQuery();
-			PurchaseGUI.tblNonEdit.setModel(DbUtils.resultSetToTableModel(rs));
+			PurchaseGUI.tblView.setModel(DbUtils.resultSetToTableModel(rs));
 			} catch(Exception e) {
 				System.out.println(e.getMessage());
 			}
@@ -396,7 +408,7 @@ public class Sql {
 	    public static void getUserCB() {
 	    	DbConnection.connect();
 			try {
-				PreparedStatement pst = DbConnection.con.prepareStatement("select * from ingredient");
+				PreparedStatement pst = DbConnection.con.prepareStatement("select * from ingredient order by name");
 				ResultSet rs = pst.executeQuery();
 				while (rs.next()) {
 					String name = rs.getString("name");
@@ -409,6 +421,18 @@ public class Sql {
 			
 			DbConnection.disconnect();
 	    }
+	    
+	 // delete purchase
+	    public static void deletePurchase(int purchaseID) {
+			DbConnection.connect();
+	    	try {
+				PreparedStatement pst = DbConnection.con.prepareStatement("delete from purchase where purchaseID = " + purchaseID);
+				pst.executeUpdate();
+			} catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+			DbConnection.disconnect();
+		}
 	    
 	  
 	    
