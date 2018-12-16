@@ -352,46 +352,42 @@ public class PurchaseGUI {
         strUnitPriceInput = tfUnitPrice.getText();
         strUnitQtyInput = tfUnitQty.getText();
         
-        if (boxesFilled() == false) {
-            giveFillWarning();
-        } else { 
-
+        if (boxesEmpty() && purchaseItem == 0) {
+            fAdd.dispose();
+        } else if (boxesEmpty() && purchaseItem > 0) {
+            response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
+            if (response != JOptionPane.YES_OPTION) {
+                fAdd.dispose();
+            }
+        } else if (boxesFilled()) {
             unitPrice = Double.parseDouble(strUnitPriceInput);
         	unitQty = Integer.parseInt(strUnitQtyInput);
-
-            if (boxesEmpty() && purchaseItem == 0) {
-                    fAdd.dispose();
-            } else if (boxesEmpty() && purchaseItem > 0) {
+            response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
+            if (response == JOptionPane.YES_OPTION) {
+                eraseInput();
+                addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+                IngredientGUI.updateQty(selectedName, unitQty);
+                purchaseItem++;
                 response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
                 if (response != JOptionPane.YES_OPTION) {
                     fAdd.dispose();
                 }
-            } else if (boxesFilled()) {
-                response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
-                if (response == JOptionPane.YES_OPTION) {
-                    eraseInput();
-                    addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
-                    IngredientGUI.updateQty(selectedName, unitQty);
-                    purchaseItem++;
-                    response = JOptionPane.showConfirmDialog(null, "Do you want to add any more purchase items?");
-                    if (response != JOptionPane.YES_OPTION) {
-                        fAdd.dispose();
-                    }
-                }
-            } else {
-                response = JOptionPane.showConfirmDialog(null, "Are you finished with this purchase?");
-                if (response == JOptionPane.YES_OPTION) {
-                    fAdd.dispose();
-                }
+            }
+        } else {
+            response = JOptionPane.showConfirmDialog(null, "Are you finished with this purchase?");
+            if (response == JOptionPane.YES_OPTION) {
+                fAdd.dispose();
             }
         }
     }
+
 
     private void validateCancel() {
         if (purchaseItem > 0) {
             response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the purchase?");
             if (response == JOptionPane.YES_OPTION) {
-                deletePurchase(purchaseID); 
+                deletePurchase(purchaseID);
+                fAdd.dispose(); 
             }
         } else {
             fAdd.dispose();
