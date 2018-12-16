@@ -330,7 +330,7 @@ public class PurchaseGUI {
         System.out.println(selectedName);
         System.out.println(strUnitPriceInput);
         System.out.println(strUnitQtyInput);
-        if (boxesFilled(selectedName, strUnitPriceInput, strUnitQtyInput) == false) {
+        if (boxesFilled() == false) {
             giveFillWarning();
         } else {
         	unitPrice = Double.parseDouble(strUnitPriceInput);
@@ -374,8 +374,8 @@ public class PurchaseGUI {
     
     // --------------- check if boxes filled ----------------
 
-    private Boolean boxesFilled(String name, String price, String qty) {
-        if (name == null || price.equals("") || qty.equals("")) {
+    private Boolean boxesFilled() {
+        if (selectedName == null || strUnitPriceInput.equals("") || strUnitQtyInput.equals("")) {
             return false;
         } else {
             return true;
@@ -409,6 +409,14 @@ public class PurchaseGUI {
         fView.setVisible(true);
     }
 
+    private Boolean boxesEmpty() {
+        if (selectedName == null && strUnitPriceInput.equals("") && strUnitQtyInput.equals("")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void validateCancel() {
         if (purchaseItem > 0) {
             response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the purchase?");
@@ -421,18 +429,20 @@ public class PurchaseGUI {
     }
 
     private void validateDone() {
-        if (boxesFilled(selectedName, strUnitPriceInput, strUnitQtyInput)) {
+        if (boxesEmpty() == false) {
             response = JOptionPane.showConfirmDialog(null, "Do you want to save this purchase item?");
             if (response == JOptionPane.YES_OPTION) {
                 validateAdd();
             } else {
                 fAdd.dispose();
             }
-        } else {
+        } else if (purchaseItem > 0) {
             response2 = JOptionPane.showConfirmDialog(null, "Save and create purchase?");
             if (response2 == JOptionPane.YES_OPTION) {
                 fAdd.dispose();
             } 
+        } else {
+            fAdd.dispose();
         }
     }
 
