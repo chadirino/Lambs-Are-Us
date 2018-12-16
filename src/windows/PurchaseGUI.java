@@ -98,13 +98,13 @@ public class PurchaseGUI {
         lblName = new JLabel("Ingredient Name:");
         cbName = new JComboBox<>();
         getUserCB();
-        cbName.setSelectedIndex(0);
+        cbName.setSelectedIndex(-1);
 
         lblUnitPrice = new JLabel("Unit Price:");
         tfUnitPrice = new JTextField(20);
 
         lblUnitQty = new JLabel("Unit Qty:");
-        tfUnitPrice = new JTextField(20);
+        tfUnitQty = new JTextField(20);
 
         // ======================================================
         //                          menu
@@ -115,7 +115,7 @@ public class PurchaseGUI {
         menuListen = new MenuItemListener();
 
         // menu menu items
-        miView = new JMenuItem("View list of purchases");
+        miView = new JMenuItem("View all purchases");
         miAdd = new JMenuItem("Add new purchase");
         miDate = new JMenuItem("Choose time frame");
         miLogout = new JMenuItem("Logout");
@@ -328,13 +328,14 @@ public class PurchaseGUI {
         formattedDate = dateFormat.format(date);
         selectedName = (String) cbName.getSelectedItem();
         strUnitPriceInput = tfUnitPrice.getText();
-        unitPrice = Double.parseDouble(strUnitPriceInput);
         strUnitQtyInput = tfUnitQty.getText();
-        unitQty = Integer.parseInt(strUnitQtyInput);
-
         if (boxesFilled(selectedName, strUnitPriceInput, strUnitQtyInput) == false) {
             giveFillWarning();
-        } else if (purchaseItem == 0) {
+        }else {
+        	unitPrice = Double.parseDouble(strUnitPriceInput);
+        	unitQty = Integer.parseInt(strUnitQtyInput);
+        }
+        if (purchaseItem == 0) {
             addPurchase(formattedDate, employeeID);
             purchaseID = getPurchaseID();
             addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
@@ -470,6 +471,6 @@ public class PurchaseGUI {
     }
 
     private void deletePurchase(Integer id) {
-        Sql.deletePurchase(id);
+        //Sql.deletePurchase(id);
     }
 }
