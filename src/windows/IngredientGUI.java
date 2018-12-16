@@ -30,16 +30,6 @@ public class IngredientGUI {
         // ======================================================
 
         tblView = new JTable();
-        // tblView.addMouseListener(new MouseAdapter() {
-        //     public void mousePressed(MouseEvent event) {
-        //         JTable table =(JTable) event.getSource();
-        //         Point point = event.getPoint();
-        //         int row = table.rowAtPoint(point);
-        //         if (event.getClickCount() == 2 && table.getSelectedRow() != -1) {
-        //             System.out.print(row); 
-        //         }
-        //     }
-        // });
 
         spView = new JScrollPane(tblView);
         spView.setPreferredSize(new Dimension(375,200));
@@ -163,10 +153,6 @@ public class IngredientGUI {
 
         openViewWindow(); 
     }
-    
-    // ======================================================
-    //                      main method
-    // ======================================================
 
     public static void main(String[] args) {
         new IngredientGUI();
@@ -282,5 +268,4 @@ public class IngredientGUI {
             return true;
         }     
     }
-
 }
