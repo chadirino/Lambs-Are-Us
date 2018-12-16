@@ -54,7 +54,6 @@ public class AdminGUI extends JFrame {
         String[] userTypes = {"Staff","Manager","Admin"};
         cbUserType = new JComboBox<>(userTypes);
         cbUserType.setSelectedIndex(0);
-        // cbUserType.addActionListener(l);
 
         // ======================================================
         //                         table
