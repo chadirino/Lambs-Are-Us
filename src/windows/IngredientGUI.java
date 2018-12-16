@@ -179,8 +179,13 @@ public class IngredientGUI {
     // ======================================================
     
     private void openViewWindow() {
-        getIngredients();
         fView.setVisible(true);
+    }
+
+    private void refreshViewWindow() {
+        getIngredients();
+        fView.revalidate();
+        fView.repaint();
     }
     
     private void openAddWindow() {
@@ -226,6 +231,7 @@ public class IngredientGUI {
                 addIngredient();
                 fAdd.dispose();
                 JOptionPane.showMessageDialog(null, strNameInput + " successfully added.");
+                refreshViewWindow();
     		} else if (event.getSource() == btnCancel) {
     			fAdd.dispose();
     		}
