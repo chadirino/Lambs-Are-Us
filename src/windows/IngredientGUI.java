@@ -151,6 +151,7 @@ public class IngredientGUI {
         fAdd = new JFrame();
         dlgAdd = new JDialog(fAdd);
         dlgAdd.add(pAdd);
+        dlgAdd.getRootPane().setDefaultButton(btnSave);
         dlgAdd.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
                 fAdd.dispose(); 
