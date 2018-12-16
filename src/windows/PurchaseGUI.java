@@ -2,28 +2,35 @@ package windows;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;
+import java.text.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import db.*;
 
 public class PurchaseGUI {
 
-	Container cp;
-    JFrame fView, fDateRange;
-    JMenuBar menuBar;
-    JMenu menu, subSort;
-    JMenuItem miView, miAdd, miUpdate, miSortNew, miSortOld, miDate, miLogout;
-    JPanel pView, pAdd, pDateRange, pUpdate, pLineView, pLineAdd, pLineUpdate;
-    JDialog dlgDateRange;
-    JButton btnSave, btnCancel, btnSearch, btnFilter, btnBack, btnDateRangeOK, btnDateRangeCancel;
-    JLabel lblSearch, lblDateTo, lblDateFrom;
-    JTextField tfSearch, tfDateTo, tfDateFrom;
-    String inputSearch, inputDateFrom, inputDateTo;
+    private JFrame fView, fDateRange, fAdd;
+    private JMenuBar menuBar;
+    private JMenu menu, subSort;
+    private JMenuItem miView, miAdd, miSortNew, miSortOld, miDate, miLogout;
+    private JPanel pView, pDateRange, pAdd;
+    private JDialog dlgDateRange, dlgAdd;
+    private JButton btnDone, btnCancel, btnSearch, btnBack, btnDateRangeOK, btnDateRangeCancel, btnNextItem;
+    private JLabel lblSearch, lblDateTo, lblDateFrom, lblName, lblUnitQty, lblUnitPrice;
+    private JTextField tfSearch, tfDateTo, tfDateFrom, tfUnitQty, tfUnitPrice;
+    public static JComboBox<String> cbName;
+    private String inputSearch, inputDateFrom, inputDateTo, selectedName, strUnitQtyInput, strUnitPriceInput, formattedDate, user;
+    private Integer unitQty, employeeID;
+    private static Integer purchaseItem, purchaseID;
+    private Double unitPrice;
+    private DateTimeFormatter dateFormat;
+    private LocalDateTime date;
     public static JTable tblEdit, tblNonEdit;
-    JScrollPane spEdit, spNonEdit;
-    TableModel tmNonEdit, tmEdit;
-    MenuItemListener menuListen;
-    ButtonListener buttonListen;
+    private JScrollPane spEdit, spNonEdit;
+    private MenuItemListener menuListen;
+    private ButtonListener buttonListen;
 
     public PurchaseGUI() {
         
@@ -31,35 +38,26 @@ public class PurchaseGUI {
         //                       buttons
         // ======================================================
 
-        // button to search table
         btnSearch = new JButton("Search");
         btnSearch.setPreferredSize(new Dimension(75,20));
 
-        // button to filter table
-        btnFilter = new JButton("Filter Table");
-
-        // button to save edit
-        btnSave = new JButton("Save");
-
-        // button to cancel edit
+        btnDone = new JButton("Done");
         btnCancel = new JButton("Cancel");
-
-        // button to go back from purchase line window to purchases window
         btnBack = new JButton("Back");
-
         btnDateRangeOK = new JButton("OK");
         btnDateRangeCancel = new JButton("Cancel");
-
-        // action listener for buttons
+        btnNextItem = new JButton("Next Item");
+        
         buttonListen = new ButtonListener();
 
         // add action listener to buttons
         btnSearch.addActionListener(buttonListen);
-        btnSave.addActionListener(buttonListen);
+        btnDone.addActionListener(buttonListen);
         btnCancel.addActionListener(buttonListen);
         btnBack.addActionListener(buttonListen);
         btnDateRangeOK.addActionListener(buttonListen);
         btnDateRangeCancel.addActionListener(buttonListen);
+        btnNextItem.addActionListener(buttonListen);
 
         // ======================================================
         //                        tables
@@ -91,6 +89,17 @@ public class PurchaseGUI {
         tfDateFrom = new JTextField(10);
         tfDateTo = new JTextField(10);
 
+        lblName = new JLabel("Ingredient Name:");
+        cbName = new JComboBox<>();
+        getUserCB();
+        cbName.setSelectedIndex(0);
+
+        lblUnitPrice = new JLabel("Unit Price:");
+        tfUnitPrice = new JTextField(20);
+
+        lblUnitQty = new JLabel("Unit Qty:");
+        tfUnitPrice = new JTextField(20);
+
         // ======================================================
         //                          menu
         // ======================================================
@@ -103,7 +112,6 @@ public class PurchaseGUI {
         // menu menu items
         miView = new JMenuItem("View list of purchases");
         miAdd = new JMenuItem("Add new purchase");
-        miUpdate = new JMenuItem("Update existing purchase");
         miDate = new JMenuItem("Choose time frame");
         miLogout = new JMenuItem("Logout");
         
@@ -114,7 +122,6 @@ public class PurchaseGUI {
         // add listener to menu items
         miView.addActionListener(menuListen);
         miAdd.addActionListener(menuListen);
-        miUpdate.addActionListener(menuListen);
         miSortNew.addActionListener(menuListen);
         miSortOld.addActionListener(menuListen);
         miDate.addActionListener(menuListen);
@@ -132,7 +139,6 @@ public class PurchaseGUI {
         menu.setMnemonic(KeyEvent.VK_M);
         menu.add(miView);
         menu.add(miAdd);
-        menu.add(miUpdate);
         menu.addSeparator();
         menu.add(subSort);
         menu.addSeparator();
@@ -165,11 +171,23 @@ public class PurchaseGUI {
         pDateRange.add(btnDateRangeOK);
         pDateRange.add(btnDateRangeCancel);
 
+        // add purchase items
+        pAdd = new JPanel();
+        pAdd.add(lblName);
+        pAdd.add(cbName);
+        pAdd.add(lblUnitPrice);
+        pAdd.add(tfUnitPrice);
+        pAdd.add(lblUnitQty);
+        pAdd.add(tfUnitQty);
+        pAdd.add(btnNextItem);
+        pAdd.add(btnDone);
+        pAdd.add(btnCancel);
+
         // ======================================================
         //                    frames/dialogs
         // ======================================================
 
-        // -------------------- view frame ----------------------
+        // --------------------- main view ----------------------
         
         fView = new JFrame();
         fView.add(pView);
@@ -199,8 +217,22 @@ public class PurchaseGUI {
         dlgDateRange.setSize(350,200);
         dlgDateRange.setLocationRelativeTo(null);
 
+        // -------------- add purchase dialog -------------------
+
+        fAdd = new JFrame();
+        dlgAdd = new JDialog(fAdd);
+        dlgAdd.add(pAdd);
+        dlgAdd.setTitle("Add Purchase");
+        dlgAdd.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent event) {
+                fAdd.dispose(); 
+            }
+        });
+        dlgAdd.setSize(350,200);
+        dlgAdd.setLocationRelativeTo(null);
+
         // open initial page
-        openViewWindow(); 
+        openViewWindow();
     }
 
     // ======================================================
@@ -211,26 +243,7 @@ public class PurchaseGUI {
         new PurchaseGUI();
     }
 
-    // ======================================================
-    //                         panels
-    // ======================================================
-
-    // add purchase page
-    private void openAdd() {
-        switchPage();
-        pAdd = new JPanel();
-        pAdd.add(spEdit);
-        cp.add(pAdd);
-    }
-
-    // update purchase page
-    private void openUpdate() {
-        switchPage();
-        pUpdate = new JPanel();
-        pUpdate.add(spEdit);
-        cp.add(pUpdate);
-    }
-
+    
     // ======================================================
     //                     event handler
     // ======================================================
@@ -241,10 +254,14 @@ public class PurchaseGUI {
             if (event.getSource() == btnSearch) {
                 inputSearch = tfSearch.getText();
                 // search and focus on cell
-            } else if (event.getSource() == btnSave) {
-                // save update
+            } else if (event.getSource() == btnNextItem) {
+                validateAdd();
+            } else if (event.getSource() == btnDone) {
+                showVerifyDialog();
+                fAdd.dispose();
                 openViewWindow();
             } else if (event.getSource() == btnCancel) {
+                validateCancel();
                 openViewWindow();
             } else if (event.getSource() == btnDateRangeOK) {
                 setDateRange();
@@ -260,14 +277,10 @@ public class PurchaseGUI {
             if (event.getSource() == miView) {
                 openViewWindow(); 
             } else if (event.getSource() == miAdd) {
-                openAdd(); 
-            } else if (event.getSource() == miUpdate) {
-                openUpdate(); 
+                openAddWindow(); 
             } else if (event.getSource() == miSortNew) {
-                // sort newest first
             	openViewWindowMostRecentFirst();
             } else if (event.getSource() == miSortOld) {
-                // sort oldest first
             	openViewWindowMostRecentLast();
             } else if (event.getSource() == miDate) {
                 openSetRangeDialog();
@@ -281,25 +294,109 @@ public class PurchaseGUI {
     }
 
     // ======================================================
-    //                      misc methods
+    //                validate add purchase
     // ======================================================
 
-    // method to wipe content pane (for switching panels)
-    private void switchPage() {
-        cp.removeAll();
-        cp.revalidate();
-        cp.repaint();
+    // ------------------- method handler -------------------
+
+    private void validateAdd() {
+
+        user = LoginGUI.user;
+        employeeID = getEmployeeID(user);
+        purchaseID = 0;
+        purchaseItem = 0;
+        dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        date = LocalDateTime.now();
+        formattedDate = dateFormat.format(date);
+        selectedName = (String) cbName.getSelectedItem();
+        strUnitPriceInput = tfUnitPrice.getText();
+        unitPrice = Double.parseDouble(strUnitPriceInput);
+        strUnitQtyInput = tfUnitQty.getText();
+        unitQty = Integer.parseInt(strUnitQtyInput);
+
+        if (boxesFilled(strUnitPriceInput, strUnitQtyInput) == false) {
+            giveFillWarning();
+        } else if (purchaseItem == 0) {
+            addPurchase(formattedDate, employeeID);
+            purchaseID = getPurchaseID();
+            addPurchaseItem(purchaseID, selectedName, unitPrice, unitQty);
+            purchaseItem++;
+        } else {
+            addPurchaseItem();
+        }
     }
+
+    // ------------------ get employee id -------------------
+    
+    private Integer getEmployeeID(String user) {
+        return Sql.getEmployeeID(user);
+    }
+
+    // ------------------ get purchase id -------------------
+    
+    private Integer getPurchaseID() {
+        return Sql.getPurchaseID();
+    }
+    
+    // ------------------ create purchase -------------------
+
+    private void addPurchase(String date, Integer empID) {
+        Sql.addPurchase(date, empID);
+    }
+
+    // ------------------ create purchase -------------------
+
+    private void addPurchaseItem(Integer purchaseID, String name, Double price, Integer qty) {
+    	Sql.addPurchaseItem(purchaseID, name, price, qty);
+    }
+    
+    // --------------- check if boxes filled ----------------
+
+    private Boolean boxesFilled(String price, String qty) {
+        if (price.equals("") || qty.equals("")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // ----------------- show fill warning ------------------
+
+    private void giveFillWarning() {
+        JOptionPane.showMessageDialog(null, "Form not completely filled out."); 
+    }
+
+    // ======================================================
+    //                      misc methods
+    // ======================================================
 
     private void openSetRangeDialog() {
         dlgDateRange.setVisible(true);
     }
 
     private void openViewWindow() {
-        Sql.getPurchases();
+        getPurchases();
         fView.setVisible(true);
     }
+
+    private void validateCancel() {
+        if (purchaseItem > 0) {
+            respose = JOptionPane.showConfirmDialog(null, "Do you want to save the purchase?");
+        }
+    }
+
+    // ======================================================
+    //                 database interactions
+    // ======================================================
     
+    private void getPurchases() {
+        Sql.getPurchases();
+    }
+
+    private void openAddWindow() {
+        dlgAdd.setVisible(true);
+    }
+
     private void openViewWindowMostRecentFirst() {
         Sql.mostRecentFirst();
         fView.setVisible(true);
@@ -310,24 +407,17 @@ public class PurchaseGUI {
         fView.setVisible(true);
     }
     
-    
     private void setDateRange() {
         inputDateFrom = tfDateFrom.getText();
         inputDateTo = tfDateTo.getText();
-
         Sql.setDateRange(inputDateFrom, inputDateTo);
-    }
-    
-    private void getPurchases() {
-        // for making table maybe output array of records
-    	Sql.getPurchases();
     }
     
     private void getPurchaseItems(int purchaseID) {
     	Sql.getPurchaseItems(purchaseID);
     }
     
-    private void addPurchase() {
-    	Sql.addPurchase();
+    private void getUserCB() {
+        Sql.getUserCB();
     }
 }
