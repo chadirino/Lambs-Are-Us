@@ -146,7 +146,7 @@ public class IngredientGUI extends JFrame {
     // ingredient list page
     private void openView() {
         switchPage();
-        Sql.getIngredients();
+        getIngredients();
         pView = new JPanel();
         pView.add(spNonEdit);
         cp.add(pView);
