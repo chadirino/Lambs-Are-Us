@@ -10,7 +10,8 @@ import db.*;
 
 public class LoginGUI {
 
-	public JDialog dlgLogin, dlgSetPswd;
+    public static String user;
+    public JDialog dlgLogin, dlgSetPswd;
     private JFrame fLogin, fSetPswd;
     private JPanel pLogin, pSetPswd;
     private BufferedImage lambIcon;
@@ -233,6 +234,7 @@ public class LoginGUI {
         } else if (firstLogin(strPswdInput) == true) {
             dlgSetPswd.setVisible(true);
         } else {
+            user = strUserInput;
             openHomeGUI(getUserType(strUserInput));
         }
     }
