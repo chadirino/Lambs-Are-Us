@@ -7,7 +7,7 @@ import db.*;
 
 public class IngredientGUI {
 
-    private static JFrame fView, fAdd;
+    private JFrame fView, fAdd;
     private JPanel pView, pAdd;
     private JDialog dlgAdd;
     private JMenuBar menuBar;
