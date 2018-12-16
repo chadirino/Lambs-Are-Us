@@ -320,13 +320,14 @@ public class PurchaseGUI {
     
     private void getPurchases() {
         // for making table maybe output array of records
+    	Sql.getPurchases();
     }
     
-    private void getPurchaseItems() {
-
+    private void getPurchaseItems(int purchaseID) {
+    	Sql.getPurchaseItems(purchaseID);
     }
     
     private void addPurchase() {
-
+    	Sql.addPurchase();
     }
 }
