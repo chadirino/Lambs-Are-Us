@@ -11,12 +11,12 @@ import db.*;
 
 public class PurchaseGUI {
 
-    private JFrame fView, fDateRange, fAdd;
+    private JFrame fView, fDateRange, fAdd, fItems;
     private JMenuBar menuBar;
     private JMenu menu, subSort;
     private JMenuItem miView, miAdd, miSortNew, miSortOld, miDate, miLogout;
-    private JPanel pView, pDateRange, pAdd;
-    private JDialog dlgDateRange, dlgAdd;
+    private JPanel pView, pDateRange, pAdd, pItems;
+    private JDialog dlgDateRange, dlgAdd, dlgItems;
     private JButton btnDone, btnCancel, btnSearch, btnBack, btnDateRangeOK, btnDateRangeCancel, btnNextItem;
     private JLabel lblSearch, lblDateTo, lblDateFrom, lblName, lblUnitQty, lblUnitPrice;
     private JTextField tfSearch, tfDateTo, tfDateFrom, tfUnitQty, tfUnitPrice;
@@ -28,8 +28,8 @@ public class PurchaseGUI {
     private static Double unitPrice;
     private DateTimeFormatter dateFormat;
     private LocalDateTime date;
-    public static JTable tblEdit, tblNonEdit;
-    private JScrollPane spEdit, spNonEdit;
+    public static JTable tblView, tblItems;
+    private JScrollPane spView, spItems;
     private MenuItemListener menuListen;
     private ButtonListener buttonListen;
 
@@ -51,7 +51,6 @@ public class PurchaseGUI {
         
         buttonListen = new ButtonListener();
 
-        // add action listener to buttons
         btnSearch.addActionListener(buttonListen);
         btnDone.addActionListener(buttonListen);
         btnCancel.addActionListener(buttonListen);
@@ -64,18 +63,24 @@ public class PurchaseGUI {
         //                        tables
         // ======================================================
         
-        // non-editable table for initial page
-        tblNonEdit = new JTable();
-        
-        
-        // editable table for update page
-        tblEdit = new JTable();
+        tblView = new JTable();
+        tblView.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent event) {
+                JTable table =(JTable) event.getSource();
+                Point point = event.getPoint();
+                int row = table.rowAtPoint(point);
+                if (event.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    getPurchaseItems(row);
+                }
+            }
+        });
 
-        // put tables inside scroll panes (give them scroll bars)
-        spNonEdit = new JScrollPane(tblNonEdit);
-        spNonEdit.setPreferredSize(new Dimension(375,200));
-        spEdit = new JScrollPane(tblEdit);
-        spEdit.setPreferredSize(new Dimension(375,200));
+        tblItems = new JTable();
+
+        spView = new JScrollPane(tblView);
+        spView.setPreferredSize(new Dimension(375,200));
+        spItems = new JScrollPane(tblItems);
+        spItems.setPreferredSize(new Dimension(375,200));
 
         // ======================================================
         //                     labels/fields
@@ -107,7 +112,6 @@ public class PurchaseGUI {
 
         // --------------------- menu items ---------------------
 
-        // menu item listener
         menuListen = new MenuItemListener();
 
         // menu menu items
@@ -120,7 +124,6 @@ public class PurchaseGUI {
         miSortNew = new JMenuItem("Most recent first");
         miSortOld = new JMenuItem("Most recent last");
         
-        // add listener to menu items
         miView.addActionListener(menuListen);
         miAdd.addActionListener(menuListen);
         miSortNew.addActionListener(menuListen);
@@ -156,14 +159,16 @@ public class PurchaseGUI {
         //                        panels
         // ======================================================
 
-        // view
+        // --------------------- main view ----------------------
+        
         pView = new JPanel();
         pView.add(lblSearch);
         pView.add(tfSearch);
         pView.add(btnSearch);
-        pView.add(spNonEdit);
+        pView.add(spView);
         
-        // date range
+         // -------------------- date range  --------------------
+        
         pDateRange = new JPanel();
         pDateRange.add(lblDateFrom);
         pDateRange.add(tfDateFrom);
@@ -172,7 +177,8 @@ public class PurchaseGUI {
         pDateRange.add(btnDateRangeOK);
         pDateRange.add(btnDateRangeCancel);
 
-        // add purchase items
+        // ----------------- add purchase item ------------------
+        
         pAdd = new JPanel();
         pAdd.add(lblName);
         pAdd.add(cbName);
@@ -183,6 +189,12 @@ public class PurchaseGUI {
         pAdd.add(btnNextItem);
         pAdd.add(btnDone);
         pAdd.add(btnCancel);
+
+        // --------------------- view items ---------------------
+        
+        pItems = new JPanel();
+        pItems.add(spItems);
+        pItems.add(btnBack);
 
         // ======================================================
         //                    frames/dialogs
@@ -202,8 +214,7 @@ public class PurchaseGUI {
         fView.setSize(450,325);
         fView.setLocationRelativeTo(null);
         
-
-        // ----------------- data range dialog ------------------
+        // ----------------- date range dialog ------------------
 
         fDateRange = new JFrame();
         dlgDateRange = new JDialog(fDateRange);
@@ -232,18 +243,27 @@ public class PurchaseGUI {
         dlgAdd.setSize(350,200);
         dlgAdd.setLocationRelativeTo(null);
 
+        // ------------------ view items -----------------------
+
+        fItems = new JFrame();
+        dlgItems = new JDialog();
+        dlgItems.add(pItems);
+        dlgItems.setTitle("Purchase Items");
+        dlgItems.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent event) {
+                fItems.dispose(); 
+            }
+        });
+        dlgItems.setSize(350,200);
+        dlgItems.setLocationRelativeTo(null);
+        
         // open initial page
         openViewWindow();
     }
 
-    // ======================================================
-    //                      main method
-    // ======================================================
-
     public static void main(String[] args) {
         new PurchaseGUI();
     }
-
     
     // ======================================================
     //                     event handler
@@ -256,7 +276,6 @@ public class PurchaseGUI {
                 inputSearch = tfSearch.getText();
                 // search and focus on cell
             } else if (event.getSource() == btnNextItem) {
-                // delete other fields user inputs
                 validateAdd();
             } else if (event.getSource() == btnDone) {
                 validateDone();
@@ -266,6 +285,8 @@ public class PurchaseGUI {
                 setDateRange();
             } else if (event.getSource() == btnDateRangeCancel) {
                 fDateRange.dispose();
+            } else if (event.getSource() == btnBack) {
+                fItems.dispose();
             }
         }
     }
@@ -283,8 +304,6 @@ public class PurchaseGUI {
             	openViewWindowMostRecentLast();
             } else if (event.getSource() == miDate) {
                 openSetRangeDialog();
-            } else if (event.getSource() == btnBack) {
-                openViewWindow();
             } else if (event.getSource() == miLogout) {
                 fView.dispose();
                 new LoginGUI();
