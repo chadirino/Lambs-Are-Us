@@ -7,7 +7,8 @@ import db.*;
 
 public class IngredientGUI {
 
-    private JFrame fView, fAdd;
+    private static JFrame fView;
+	private JFrame fAdd;
     private JPanel pView, pAdd;
     private JDialog dlgAdd;
     private JMenuBar menuBar;
@@ -233,7 +234,7 @@ public class IngredientGUI {
     //                  database interactions
     // ======================================================
 
-    private void getIngredients() {
+    private static void getIngredients() {
         Sql.getIngredients();
     }
     
@@ -249,6 +250,9 @@ public class IngredientGUI {
 
     public static void updateQty(String name, Integer unitQty) {
         Sql.updateQty(name, unitQty);
+        getIngredients();
+        fView.revalidate();
+        fView.repaint();
     }
 
     // ======================================================
